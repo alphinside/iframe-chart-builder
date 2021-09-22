@@ -7,7 +7,7 @@ api_router = APIRouter()
 
 api_router.include_router(
     charts_builder.router,
-    tags=["charts_builder"],
-    prefix="/charts_builder",
+    tags=["charts-builder"],
+    prefix="/charts-builder",
     dependencies=[Depends(get_api_key_authorization)],
 )

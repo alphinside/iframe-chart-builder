@@ -22,6 +22,9 @@ def get_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    if not get_settings().graphs_output_dir.exists():
+        get_settings().graphs_output_dir.mkdir()
+
     return app
 
 
