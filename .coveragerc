@@ -1,0 +1,8 @@
+[run]
+omit =
+    */site-packages/*
+    */distutils/*
+    tests/*
+    app/tests/*
+    app/dependencies/backends.py
+    app/routes/kube_probes.py
