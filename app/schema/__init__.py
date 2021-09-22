@@ -1,12 +1,9 @@
-from pathlib import PosixPath
-from typing import Union
-
 from pydantic import BaseModel
 
 
-class GraphMeta(BaseModel):
-    path: Union[str, PosixPath]
+class SuccessMessage(BaseModel):
+    message: str = "success"
 
 
 class SuccessResponse(BaseModel):
-    data: GraphMeta
+    data: SuccessMessage = SuccessMessage()
