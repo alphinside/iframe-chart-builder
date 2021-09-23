@@ -25,3 +25,4 @@ class BarChartParams(BaseGraphParams):
 class ChoroplethMapParams(BaseGraphParams):
     column_for_province: str
     column_for_color: str
+    zoom_level: int = 4
