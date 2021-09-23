@@ -1,12 +1,15 @@
 from pathlib import Path, PosixPath
-from typing import Optional, Union
+from typing import Any, Dict, Union
 
 from pydantic import BaseModel, root_validator, validator
 
 from app.constant import ChartTypes
-from app.schema.params import BarChartParams
+from app.schema.params import BarChartParams, ChoroplethMapParams
 
-TYPE_PARAMS_MAP = {ChartTypes.bar: BarChartParams}
+TYPE_PARAMS_MAP = {
+    ChartTypes.bar: BarChartParams,
+    ChartTypes.choropleth_map: ChoroplethMapParams,
+}
 
 
 def _cast_to_posix_path(str):
@@ -17,8 +20,7 @@ class ChartBuilderRequest(BaseModel):
     input_path: Union[str, PosixPath]
     output_path: Union[str, PosixPath]
     chart_type: ChartTypes
-    graph_params: Union[BarChartParams]
-    title: Optional[str] = None
+    graph_params: Dict[str, Any]
 
     _cast_input_path = validator("input_path", allow_reuse=True)(
         _cast_to_posix_path
@@ -28,10 +30,9 @@ class ChartBuilderRequest(BaseModel):
     )
 
     @root_validator
-    def check_type_and_params_pair(cls, values):
-        assert (
-            type(values["graph_params"])
-            == TYPE_PARAMS_MAP[values["chart_type"]]
-        )
+    def cast_graph_params(cls, values):
+        values["graph_params"] = TYPE_PARAMS_MAP[
+            values["chart_type"]
+        ].parse_obj(values["graph_params"])
 
         return values

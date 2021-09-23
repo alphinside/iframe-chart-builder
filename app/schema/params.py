@@ -3,7 +3,13 @@ from typing import List, Optional, Union
 from pydantic import BaseModel, root_validator
 
 
-class BarChartParams(BaseModel):
+class BaseGraphParams(BaseModel):
+    width: Optional[int] = None
+    height: Optional[int] = None
+    title: Optional[str] = None
+
+
+class BarChartParams(BaseGraphParams):
     column_for_x: str
     column_for_y: Union[str, List[str]]
     column_for_color: Optional[str] = None
@@ -14,3 +20,8 @@ class BarChartParams(BaseModel):
             assert values["column_for_y"] is not None
 
         return values
+
+
+class ChoroplethMapParams(BaseGraphParams):
+    column_for_province: str
+    column_for_color: str

@@ -16,4 +16,4 @@ class BaseEnum(Enum, metaclass=MetaEnum):
 
 class ChartTypes(str, BaseEnum):
     bar = "bar"
-    pie = "pie"
+    choropleth_map = "choropleth_map"
