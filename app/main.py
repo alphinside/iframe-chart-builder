@@ -2,8 +2,10 @@ import logging
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.config import get_settings
+from app.constant import CHARTS_ROUTE, TABLES_ROUTE
 from app.routes import api_router
 
 logging.basicConfig(
@@ -22,8 +24,22 @@ def get_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    if not get_settings().graphs_output_dir.exists():
-        get_settings().graphs_output_dir.mkdir()
+    if not get_settings().charts_output_dir.exists():
+        get_settings().charts_output_dir.mkdir()
+
+    if not get_settings().table_snippet_output_dir.exists():
+        get_settings().table_snippet_output_dir.mkdir()
+
+    app.mount(
+        CHARTS_ROUTE,
+        StaticFiles(directory=get_settings().charts_output_dir),
+        name="charts",
+    )
+    app.mount(
+        TABLES_ROUTE,
+        StaticFiles(directory=get_settings().table_snippet_output_dir),
+        name="tables",
+    )
 
     return app
 

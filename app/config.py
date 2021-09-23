@@ -8,7 +8,8 @@ from pydantic import BaseSettings
 class Settings(BaseSettings):
     service_api_key: str
     cors_origins: Union[str, List[str]]
-    graphs_output_dir: Union[PosixPath, str]
+    charts_output_dir: Union[PosixPath, str]
+    table_snippet_output_dir: Union[PosixPath, str]
 
     class Config:
         env_file = ".env"
@@ -18,6 +19,7 @@ class Settings(BaseSettings):
 def get_settings():
     settings = Settings()
     settings.cors_origins = settings.cors_origins.split(";")
-    settings.graphs_output_dir = Path(settings.graphs_output_dir)
+    settings.charts_output_dir = Path(settings.charts_output_dir)
+    settings.table_snippet_output_dir = Path(settings.table_snippet_output_dir)
 
     return settings

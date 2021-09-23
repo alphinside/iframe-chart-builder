@@ -1,9 +1,11 @@
+from pathlib import PosixPath
+
 from pydantic import BaseModel
 
 
 class SuccessMessage(BaseModel):
-    message: str = "success"
+    chart_url: PosixPath
 
 
 class SuccessResponse(BaseModel):
-    data: SuccessMessage = SuccessMessage()
+    data: SuccessMessage
