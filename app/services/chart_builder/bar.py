@@ -1,5 +1,6 @@
 from http import HTTPStatus
 
+import pandas as pd
 import plotly.express as px
 from fastapi import HTTPException
 from plotly.graph_objs._figure import Figure
@@ -10,23 +11,23 @@ from app.services.chart_builder import ChartBuilderInterface
 
 
 class BarChartBuilder(ChartBuilderInterface):
-    def validate_columns(self, graph_params: BarChartParams):
+    def validate_columns(self, chart_params: BarChartParams, df: pd.DataFrame):
         columns_not_found = []
 
-        if graph_params.column_for_x not in self.df.columns:
-            columns_not_found.append(graph_params.column_for_x)
+        if chart_params.column_for_x not in df.columns:
+            columns_not_found.append(chart_params.column_for_x)
 
-        if isinstance(graph_params.column_for_x, str):
-            y_columns = [graph_params.column_for_x]
+        if isinstance(chart_params.column_for_x, str):
+            y_columns = [chart_params.column_for_x]
         else:
-            y_columns = graph_params.column_for_x
+            y_columns = chart_params.column_for_x
 
         for column in y_columns:
-            if column not in self.df.columns:
+            if column not in df.columns:
                 columns_not_found.append(column)
 
-        if graph_params.column_for_color is not None:
-            if graph_params.column_for_color not in self.df.columns:
+        if chart_params.column_for_color is not None:
+            if chart_params.column_for_color not in df.columns:
                 columns_not_found.append(column)
 
         if len(columns_not_found) != 0:
@@ -37,26 +38,28 @@ class BarChartBuilder(ChartBuilderInterface):
                 ),
             )
 
-    def build_chart(self, graph_params: BarChartParams) -> Figure:
+    def build_chart(
+        self, chart_params: BarChartParams, df: pd.DataFrame
+    ) -> Figure:
         try:
-            if isinstance(graph_params.column_for_y, list):
+            if isinstance(chart_params.column_for_y, list):
                 fig = px.bar(
-                    self.df,
-                    x=graph_params.column_for_x,
-                    y=graph_params.column_for_y,
-                    title=graph_params.title,
-                    width=graph_params.width,
-                    height=graph_params.height,
+                    df,
+                    x=chart_params.column_for_x,
+                    y=chart_params.column_for_y,
+                    title=chart_params.title,
+                    width=chart_params.width,
+                    height=chart_params.height,
                 )
             else:
                 fig = px.bar(
-                    self.df,
-                    x=graph_params.column_for_x,
-                    y=graph_params.column_for_y,
-                    color=graph_params.column_for_color,
-                    title=graph_params.title,
-                    width=graph_params.width,
-                    height=graph_params.height,
+                    df,
+                    x=chart_params.column_for_x,
+                    y=chart_params.column_for_y,
+                    color=chart_params.column_for_color,
+                    title=chart_params.title,
+                    width=chart_params.width,
+                    height=chart_params.height,
                 )
         except Exception as e:
             raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=e)

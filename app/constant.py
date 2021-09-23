@@ -1,5 +1,8 @@
 from enum import Enum, EnumMeta
 
+CHARTS_ROUTE = "/charts"
+TABLES_ROUTE = "/tables"
+
 
 class MetaEnum(EnumMeta):
     def __contains__(cls, item):
@@ -14,6 +17,7 @@ class BaseEnum(Enum, metaclass=MetaEnum):
     pass
 
 
-class ChartTypes(str, BaseEnum):
+class VisTypes(str, BaseEnum):
+    table = "table"
     bar = "bar"
     choropleth_map = "choropleth_map"

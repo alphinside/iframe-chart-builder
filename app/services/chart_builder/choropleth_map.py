@@ -1,6 +1,7 @@
 import json
 from http import HTTPStatus
 
+import pandas as pd
 import plotly.express as px
 from fastapi import HTTPException
 from plotly.graph_objs._figure import Figure
@@ -14,14 +15,16 @@ with open("app/data/indonesia-province.json", "r") as f:
 
 
 class ChoroplethMapBuilder(ChartBuilderInterface):
-    def validate_columns(self, graph_params: ChoroplethMapParams):
+    def validate_columns(
+        self, chart_params: ChoroplethMapParams, df: pd.DataFrame
+    ):
         columns_not_found = []
 
-        if graph_params.column_for_province not in self.df.columns:
-            columns_not_found.append(graph_params.column_for_province)
+        if chart_params.column_for_province not in df.columns:
+            columns_not_found.append(chart_params.column_for_province)
 
-        if graph_params.column_for_color not in self.df.columns:
-            columns_not_found.append(graph_params.column_for_color)
+        if chart_params.column_for_color not in df.columns:
+            columns_not_found.append(chart_params.column_for_color)
 
         if len(columns_not_found) != 0:
             raise HTTPException(
@@ -31,19 +34,21 @@ class ChoroplethMapBuilder(ChartBuilderInterface):
                 ),
             )
 
-    def build_chart(self, graph_params: ChoroplethMapParams) -> Figure:
+    def build_chart(
+        self, chart_params: ChoroplethMapParams, df: pd.DataFrame
+    ) -> Figure:
         try:
             fig = px.choropleth_mapbox(
-                self.df,
+                df,
                 geojson=indo_geojson,
-                color=graph_params.column_for_color,
-                locations=graph_params.column_for_province,
+                color=chart_params.column_for_color,
+                locations=chart_params.column_for_province,
                 featureidkey="properties.state",
                 center={"lat": -4.050027, "lon": 116.375442},
-                zoom=graph_params.zoom_level,
+                zoom=chart_params.zoom_level,
                 mapbox_style="open-street-map",
-                width=graph_params.width,
-                height=graph_params.height,
+                width=chart_params.width,
+                height=chart_params.height,
             )
 
         except Exception as e:
