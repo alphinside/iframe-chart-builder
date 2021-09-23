@@ -39,8 +39,11 @@ class ChoroplethMapBuilder(ChartBuilderInterface):
                 color=graph_params.column_for_color,
                 locations=graph_params.column_for_province,
                 featureidkey="properties.state",
-                #    center={"lat": 45.5517, "lon": -73.7073},
-                mapbox_style="carto-positron",
+                center={"lat": -4.050027, "lon": 116.375442},
+                zoom=graph_params.zoom_level,
+                mapbox_style="open-street-map",
+                width=graph_params.width,
+                height=graph_params.height,
             )
 
         except Exception as e:
