@@ -38,21 +38,15 @@ class ChoroplethMapBuilder(ChartBuilderInterface):
         self, chart_params: ChoroplethMapParams, df: pd.DataFrame
     ) -> Figure:
 
-        try:
-            fig = px.choropleth_mapbox(
-                df,
-                geojson=indo_geojson,
-                color=chart_params.column_for_color,
-                locations=chart_params.column_for_province,
-                featureidkey="properties.state",
-                center={"lat": -4.050027, "lon": 116.375442},
-                zoom=chart_params.zoom_level,
-                mapbox_style="open-street-map",
-                width=chart_params.width,
-                height=chart_params.height,
-            )
-
-        except Exception as e:
-            raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=e)
+        fig = px.choropleth_mapbox(
+            df,
+            geojson=indo_geojson,
+            color=chart_params.column_for_color,
+            locations=chart_params.column_for_province,
+            featureidkey="properties.state",
+            center={"lat": -4.050027, "lon": 116.375442},
+            zoom=chart_params.zoom_level,
+            mapbox_style="open-street-map",
+        )
 
         return fig

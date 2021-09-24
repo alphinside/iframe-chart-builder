@@ -4,8 +4,6 @@ from pydantic import BaseModel
 
 
 class BaseChartParams(BaseModel):
-    width: Optional[int] = None
-    height: Optional[int] = None
     title: Optional[str] = None
 
 

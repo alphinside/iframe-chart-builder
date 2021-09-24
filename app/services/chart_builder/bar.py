@@ -41,27 +41,21 @@ class BarChartBuilder(ChartBuilderInterface):
     def build_chart(
         self, chart_params: BarChartParams, df: pd.DataFrame
     ) -> Figure:
-        try:
-            if isinstance(chart_params.column_for_y, list):
-                fig = px.bar(
-                    df,
-                    x=chart_params.column_for_x,
-                    y=chart_params.column_for_y,
-                    title=chart_params.title,
-                    width=chart_params.width,
-                    height=chart_params.height,
-                )
-            else:
-                fig = px.bar(
-                    df,
-                    x=chart_params.column_for_x,
-                    y=chart_params.column_for_y,
-                    color=chart_params.column_for_color,
-                    title=chart_params.title,
-                    width=chart_params.width,
-                    height=chart_params.height,
-                )
-        except Exception as e:
-            raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=e)
+
+        if isinstance(chart_params.column_for_y, list):
+            fig = px.bar(
+                df,
+                x=chart_params.column_for_x,
+                y=chart_params.column_for_y,
+                title=chart_params.title,
+            )
+        else:
+            fig = px.bar(
+                df,
+                x=chart_params.column_for_x,
+                y=chart_params.column_for_y,
+                color=chart_params.column_for_color,
+                title=chart_params.title,
+            )
 
         return fig
