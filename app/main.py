@@ -2,10 +2,12 @@ import logging
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.wsgi import WSGIMiddleware
 
 from app.config import get_settings
-from app.constant import CHARTS_ROUTE, TABLES_ROUTE
+from app.constant import DASH_MOUNT_ROUTE
+from app.dash_app import dash_app
+from app.data_manager import create_dir_dependencies, populate_persisted_data
 from app.routes import api_router
 
 logging.basicConfig(
@@ -24,22 +26,21 @@ def get_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    if not get_settings().charts_output_dir.exists():
-        get_settings().charts_output_dir.mkdir()
+    app.mount(DASH_MOUNT_ROUTE, WSGIMiddleware(dash_app.server))
 
-    if not get_settings().table_snippet_output_dir.exists():
-        get_settings().table_snippet_output_dir.mkdir()
+    create_dir_dependencies()
+    populate_persisted_data()
 
-    app.mount(
-        CHARTS_ROUTE,
-        StaticFiles(directory=get_settings().charts_output_dir),
-        name="charts",
-    )
-    app.mount(
-        TABLES_ROUTE,
-        StaticFiles(directory=get_settings().table_snippet_output_dir),
-        name="tables",
-    )
+    # app.mount(
+    #     CHARTS_ROUTE,
+    #     StaticFiles(directory=get_settings().charts_output_dir),
+    #     name="charts",
+    # )
+    # app.mount(
+    #     TABLES_ROUTE,
+    #     StaticFiles(directory=get_settings().table_snippet_output_dir),
+    #     name="tables",
+    # )
 
     return app
 

@@ -1,1 +1,1 @@
-COLUMN_NOT_FOUND_ERROR = "column {column_name} not found in data"
+COLUMN_NOT_FOUND_ERROR = "column {column_names} not found in data"
