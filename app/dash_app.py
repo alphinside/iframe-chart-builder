@@ -1,4 +1,5 @@
 from http import HTTPStatus
+from urllib.parse import parse_qs
 
 import config
 import dash
@@ -9,6 +10,7 @@ from dash.dependencies import Input, Output
 from flask import Response
 
 from app.constant import DASH_ROOT_ROUTE
+from app.services.layout import create_table_layout
 
 dash_app = dash.Dash(__name__, requests_pathname_prefix=DASH_ROOT_ROUTE)
 
@@ -45,17 +47,19 @@ dash_app.layout = html.Div(
 
 
 @dash_app.callback(
-    Output("page-content", "children"), [Input("url", "pathname")]
+    Output("page-content", "children"),
+    [Input("url", "pathname"), Input("url", "search")],
 )
-def display_page(pathname):
+def display_page(pathname, search):
+    query = parse_qs(search.strip("?"))
+
     if pathname.startswith("/dash/charts"):
         return html.Div(html.H1("HELLO WORLD"))
     if pathname.startswith("/dash/tables"):
-        import pdb
-
-        pdb.set_trace()
         if pathname in config.table_snippets:
-            return html.Div(html.H1("HELLO WORLD"))
+            return create_table_layout(
+                table_name=config.table_snippets[pathname], query=query
+            )
 
     Response("404 Not Found", HTTPStatus.NOT_FOUND)
     return html.Div("404 Not Found")
