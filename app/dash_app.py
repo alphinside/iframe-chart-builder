@@ -10,7 +10,8 @@ from dash.dependencies import Input, Output
 from flask import Response
 
 from app.constant import DASH_ROOT_ROUTE
-from app.services.layout import create_table_layout
+from app.schema.requests import FigSize
+from app.services.table import create_table_snippet
 
 dash_app = dash.Dash(__name__, requests_pathname_prefix=DASH_ROOT_ROUTE)
 
@@ -52,14 +53,23 @@ dash_app.layout = html.Div(
 )
 def display_page(pathname, search):
     query = parse_qs(search.strip("?"))
+    figsize = FigSize.parse_obj(query)
 
     if pathname.startswith("/dash/charts"):
         return html.Div(html.H1("HELLO WORLD"))
-    if pathname.startswith("/dash/tables"):
+    elif pathname.startswith("/dash/tables"):
         if pathname in config.table_snippets:
-            return create_table_layout(
-                table_name=config.table_snippets[pathname], query=query
+            fig = create_table_snippet(
+                table_name=config.table_snippets[pathname]
             )
+    else:
+        Response("404 Not Found", HTTPStatus.NOT_FOUND)
+        return html.Div("404 Not Found")
 
-    Response("404 Not Found", HTTPStatus.NOT_FOUND)
-    return html.Div("404 Not Found")
+    if figsize.width is not None:
+        fig.layout.width = figsize.width
+
+    if figsize.width is not None:
+        fig.layout.height = figsize.height
+
+    return html.Div([dcc.Graph(figure=fig)])
