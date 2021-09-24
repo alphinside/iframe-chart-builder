@@ -12,7 +12,7 @@ from app.constant import (
     STANDARD_DATA_FILENAME,
     TABLES_ROUTE,
 )
-from app.utils import construct_standard_dash_url
+from app.utils import construct_standard_dash_url, read_data
 
 config.table_dfs = {}
 config.table_snippets = {}
@@ -34,7 +34,7 @@ def get_data(table_name: str, rewrite: bool = False) -> pd.DataFrame:
                 "please upload it first",
             )
 
-        config.table_dfs[table_name] = pd.read_parquet(data_path)
+        config.table_dfs[table_name] = read_data(data_path)
         config.table_dfs[table_name] = config.table_dfs[table_name].loc[
             :, ~config.table_dfs[table_name].columns.str.contains("^Unnamed")
         ]

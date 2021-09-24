@@ -6,6 +6,7 @@ import pandas as pd
 from pydantic import BaseModel
 
 from app.constant import DASH_MOUNT_ROUTE
+from app.schema.requests import ChartBuilderRequest
 
 
 def serialize_data(
@@ -15,6 +16,10 @@ def serialize_data(
     output_path = output_dir / filename
 
     df.to_parquet(output_path.with_suffix(".gzip"), compression="gzip")
+
+
+def read_data(path: Union[str, PosixPath]):
+    return pd.read_parquet(path)
 
 
 def serialize_config(
@@ -27,6 +32,10 @@ def serialize_config(
 
     with open(output_path, "w") as f:
         f.write(config.json())
+
+
+def read_config(path: Union[str, PosixPath]):
+    return ChartBuilderRequest.parse_file(path)
 
 
 def construct_standard_dash_url(name: str, route: str) -> str:

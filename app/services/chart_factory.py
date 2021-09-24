@@ -12,7 +12,11 @@ from app.schema.requests import ChartBuilderRequest
 from app.services.chart_builder import ChartBuilderInterface
 from app.services.chart_builder.bar import BarChartBuilder
 from app.services.chart_builder.choropleth_map import ChoroplethMapBuilder
-from app.utils import construct_standard_dash_url, serialize_config
+from app.utils import (
+    construct_standard_dash_url,
+    read_config,
+    serialize_config,
+)
 
 
 class ChartBuilderFactory:
@@ -91,7 +95,7 @@ def create_chart(chart_name: str):
             f"in {chart_config_file_path}"
         )
 
-    config_model = ChartBuilderRequest.parse_file(chart_config_file_path)
+    config_model = read_config(chart_config_file_path)
 
     chart_builder = ChartBuilderService(config_model.chart_type)
     fig = chart_builder.build(
