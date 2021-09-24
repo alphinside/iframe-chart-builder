@@ -13,7 +13,7 @@ from app.schema.response import (
     UploadSuccessData,
     UploadSuccessResponse,
 )
-from app.services.factory import ChartBuilderService
+from app.services.chart_factory import ChartBuilderService
 from app.services.validator import validate_file_suffix
 from app.utils import construct_standard_table_url, serialize_data
 
