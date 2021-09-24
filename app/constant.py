@@ -22,6 +22,6 @@ class BaseEnum(Enum, metaclass=MetaEnum):
     pass
 
 
-class VisTypes(str, BaseEnum):
+class ChartTypes(str, BaseEnum):
     bar = "bar"
     choropleth_map = "choropleth_map"
