@@ -37,6 +37,7 @@ class ChoroplethMapBuilder(ChartBuilderInterface):
     def build_chart(
         self, chart_params: ChoroplethMapParams, df: pd.DataFrame
     ) -> Figure:
+
         try:
             fig = px.choropleth_mapbox(
                 df,

@@ -145,3 +145,4 @@ venv-*
 .vscode
 
 *.html
+*.gzip

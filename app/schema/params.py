@@ -17,7 +17,7 @@ class BarChartParams(BaseChartParams):
     @root_validator
     def check_color_and_y_pair(cls, values):
         if not isinstance(values["column_for_y"], list):
-            assert values["column_for_y"] is not None
+            assert values["column_for_color"] is not None
 
         return values
 
