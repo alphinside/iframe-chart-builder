@@ -122,6 +122,14 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
+name = "config"
+version = "0.5.1"
+description = "A hierarchical, easy-to-use, powerful configuration module for Python"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "coverage"
 version = "5.5"
 description = "Code coverage measurement for Python"
@@ -818,7 +826,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "f4ed37f1babf899ed8f5e005c45d6e3de6ae66de6403e61a3b6775c684330f54"
+content-hash = "a77c7530f8a8ae68b380b5ca2242d021e22afefa2b98b9ce03b4c690984c5918"
 
 [metadata.files]
 aiofiles = [
@@ -908,6 +916,10 @@ click = [
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
     {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
+]
+config = [
+    {file = "config-0.5.1-py2.py3-none-any.whl", hash = "sha256:79ffa009ff2663cc8ca29e56bcec031c044609d4bafaa4f884132a413101ce84"},
+    {file = "config-0.5.1.zip", hash = "sha256:2dd4a03aa383d30711d5a3325a1858de225328d61950a85be5b74c100f63016d"},
 ]
 coverage = [
     {file = "coverage-5.5-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:b6d534e4b2ab35c9f93f46229363e17f63c53ad01330df9f2d6bd1187e5eaacf"},
