@@ -3,7 +3,7 @@ from pathlib import Path
 
 CHARTS_ROUTE = "/charts/"
 TABLES_ROUTE = "/tables/"
-STANDARD_CHARTS_CONFIG = Path("charts_config.yaml")
+STANDARD_CHARTS_CONFIG = Path("charts_config.json")
 STANDARD_DATA_FILENAME = Path("data.gzip")
 DASH_MOUNT_ROUTE = "/dash"
 DASH_ROOT_ROUTE = DASH_MOUNT_ROUTE + "/"

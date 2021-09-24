@@ -4,8 +4,8 @@ import pandas as pd
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 
 from app.config import get_settings
-from app.constant import STANDARD_DATA_FILENAME
-from app.data_manager import register_table_path
+from app.constant import STANDARD_DATA_FILENAME, TABLES_ROUTE
+from app.data_manager import register_chart_path, register_table_path
 from app.schema.requests import ChartBuilderRequest
 from app.schema.response import (
     ChartBuilderData,
@@ -15,7 +15,7 @@ from app.schema.response import (
 )
 from app.services.chart_factory import ChartBuilderService
 from app.services.validator import validate_file_suffix
-from app.utils import construct_standard_table_url, serialize_data
+from app.utils import construct_standard_dash_url, serialize_data
 
 router = APIRouter()
 
@@ -53,7 +53,9 @@ async def upload(
         df=df, filename=data_standardized_name, output_dir=output_dir
     )
 
-    table_snippet_url = construct_standard_table_url(table_name)
+    table_snippet_url = construct_standard_dash_url(
+        name=table_name, route=TABLES_ROUTE
+    )
 
     register_table_path(
         table_name=table_name, table_snippet_url=table_snippet_url
@@ -78,6 +80,10 @@ async def create(request: ChartBuilderRequest):
         table_name=request.table_name, chart_params=request.chart_params
     )
     config = service.create_and_dump_config(request)
+
+    register_chart_path(
+        chart_name=config.chart_name, chart_url=config.chart_url
+    )
 
     return ChartBuilderResponse(
         data=ChartBuilderData(

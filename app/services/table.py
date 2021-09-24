@@ -6,6 +6,6 @@ from app.data_manager import get_data
 def create_table_snippet(table_name: str):
     df = get_data(table_name)
 
-    fig = ff.create_table(df.head(5))
+    fig = ff.create_table(df.head(5), height_constant=20)
 
     return fig
