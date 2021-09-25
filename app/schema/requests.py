@@ -1,6 +1,6 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
-from pydantic import BaseModel, root_validator
+from pydantic import BaseModel, Field, root_validator
 
 from app.constant import ChartTypes
 from app.schema.params import BarChartParams, ChoroplethMapParams
@@ -16,7 +16,6 @@ class ChartBuilderRequest(BaseModel):
     chart_name: str
     chart_type: ChartTypes
     chart_params: Dict[str, Any]
-    chart_url: str = ""
 
     @root_validator
     def cast_chart_params_and_set_default(cls, values):
@@ -27,16 +26,16 @@ class ChartBuilderRequest(BaseModel):
         return values
 
 
-class FigSize(BaseModel):
-    width: int = 1280
-    height: int = 720
+class FigCSSArgs(BaseModel):
+    width: Optional[str] = Field(None, alias="figWidth")
+    height: Optional[str] = Field(None, alias="figHeight")
 
     @root_validator(pre=True)
     def cast_chart_params(cls, values):
-        if "width" in values:
-            values["width"] = int(values["width"][0])
+        if "figWidth" in values:
+            values["figWidth"] = values["figWidth"][0]
 
-        if "height" in values:
-            values["height"] = int(values["height"][0])
+        if "figHeight" in values:
+            values["figHeight"] = values["figHeight"][0]
 
         return values

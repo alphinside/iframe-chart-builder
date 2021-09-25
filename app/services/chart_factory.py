@@ -6,18 +6,14 @@ from dash import dcc
 from fastapi import HTTPException
 
 from app.config import get_settings
-from app.constant import CHARTS_ROUTE, STANDARD_CHARTS_CONFIG, ChartTypes
+from app.constant import STANDARD_CHARTS_CONFIG, ChartTypes
 from app.data_manager import get_data
 from app.schema.params import BaseChartParams
-from app.schema.requests import ChartBuilderRequest, FigSize
+from app.schema.requests import ChartBuilderRequest, FigCSSArgs
 from app.services.chart_builder import ChartBuilderInterface
 from app.services.chart_builder.bar import BarChartBuilder
 from app.services.chart_builder.choropleth_map import ChoroplethMapBuilder
-from app.utils import (
-    construct_standard_dash_url,
-    read_config,
-    serialize_config,
-)
+from app.utils import read_config, serialize_config
 
 
 class ChartBuilderFactory:
@@ -57,23 +53,16 @@ class ChartBuilderService:
             df=df, filters=chart_params.filters
         )
 
-    def create_and_dump_config(
-        self, config: ChartBuilderRequest
-    ) -> ChartBuilderRequest:
-        config.chart_url = construct_standard_dash_url(
-            name=config.chart_name, route=CHARTS_ROUTE
-        )
-
+    def dump_config(self, config: ChartBuilderRequest) -> ChartBuilderRequest:
         chart_config_dir = get_settings().charts_output_dir / Path(
             config.chart_name
         )
+
         serialize_config(
             config=config,
             output_dir=chart_config_dir,
             filename=STANDARD_CHARTS_CONFIG,
         )
-
-        return config
 
     def build(self, table_name: str, chart_params: Type[BaseChartParams]):
         df = get_data(table_name)
@@ -88,7 +77,7 @@ factory.register_type(ChartTypes.bar, BarChartBuilder)
 factory.register_type(ChartTypes.choropleth_map, ChoroplethMapBuilder)
 
 
-def create_chart(chart_name: str, figsize: FigSize):
+def create_chart(chart_name: str, fig_css_args: FigCSSArgs):
     chart_config_file_path = (
         get_settings().charts_output_dir / chart_name / STANDARD_CHARTS_CONFIG
     )
@@ -107,12 +96,4 @@ def create_chart(chart_name: str, figsize: FigSize):
         chart_params=config_model.chart_params,
     )
 
-    return [
-        dcc.Graph(
-            figure=fig,
-            style={
-                "width": f"{figsize.width}px",
-                "height": f"{figsize.height}px",
-            },
-        )
-    ]
+    return [dcc.Graph(figure=fig, style=fig_css_args.dict(exclude_none=True))]

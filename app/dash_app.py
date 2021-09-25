@@ -8,7 +8,7 @@ from dash.dependencies import Input, Output
 from flask import Response
 
 from app.constant import DASH_ROOT_ROUTE
-from app.schema.requests import FigSize
+from app.schema.requests import FigCSSArgs
 from app.services.chart_factory import create_chart
 from app.services.table import create_table_snippet
 
@@ -25,19 +25,21 @@ dash_app.layout = html.Div(
 )
 def display_page(pathname, search):
     query = parse_qs(search.strip("?"))
-    figsize = FigSize.parse_obj(query)
+    fig_css_args = FigCSSArgs.parse_obj(query)
 
     try:
         if pathname.startswith("/dash/charts"):
             if pathname in config.charts:
                 return create_chart(
-                    chart_name=config.charts[pathname], figsize=figsize
+                    chart_name=config.charts[pathname],
+                    fig_css_args=fig_css_args,
                 )
 
         if pathname.startswith("/dash/tables"):
             if pathname in config.table_snippets:
                 return create_table_snippet(
-                    table_name=config.table_snippets[pathname], figsize=figsize
+                    table_name=config.table_snippets[pathname],
+                    fig_css_args=fig_css_args,
                 )
 
         Response("404 Not Found", HTTPStatus.NOT_FOUND)
