@@ -26,18 +26,6 @@ class ChartBuilderRequest(BaseModel):
 
         return values
 
-    @root_validator
-    def set_default_title(cls, values):
-
-        if isinstance(values["chart_params"], dict):
-            if values["chart_params"]["title"] is None:
-                values["chart_params"]["title"] = values["chart_name"]
-        else:
-            if values["chart_params"].title is None:
-                values["chart_params"].title = values["chart_name"]
-
-        return values
-
 
 class FigSize(BaseModel):
     width: int = 1280
