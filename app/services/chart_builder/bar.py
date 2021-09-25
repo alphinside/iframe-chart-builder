@@ -5,7 +5,7 @@ import plotly.express as px
 from fastapi import HTTPException
 from plotly.graph_objs._figure import Figure
 
-from app.schema.errors import COLUMN_NOT_FOUND_ERROR
+from app.errors import COLUMN_NOT_FOUND_ERROR
 from app.schema.params import BarChartParams
 from app.services.chart_builder import ChartBuilderInterface
 

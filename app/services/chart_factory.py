@@ -2,13 +2,14 @@ from http import HTTPStatus
 from pathlib import Path
 from typing import Type
 
+from dash import dcc
 from fastapi import HTTPException
 
 from app.config import get_settings
 from app.constant import CHARTS_ROUTE, STANDARD_CHARTS_CONFIG, ChartTypes
 from app.data_manager import get_data
 from app.schema.params import BaseChartParams
-from app.schema.requests import ChartBuilderRequest
+from app.schema.requests import ChartBuilderRequest, FigSize
 from app.services.chart_builder import ChartBuilderInterface
 from app.services.chart_builder.bar import BarChartBuilder
 from app.services.chart_builder.choropleth_map import ChoroplethMapBuilder
@@ -52,6 +53,9 @@ class ChartBuilderService:
     ):
         df = get_data(table_name)
         self.chart_builder.validate_columns(df=df, chart_params=chart_params)
+        self.chart_builder.validate_filters(
+            df=df, filters=chart_params.filters
+        )
 
     def create_and_dump_config(
         self, config: ChartBuilderRequest
@@ -84,7 +88,7 @@ factory.register_type(ChartTypes.bar, BarChartBuilder)
 factory.register_type(ChartTypes.choropleth_map, ChoroplethMapBuilder)
 
 
-def create_chart(chart_name: str):
+def create_chart(chart_name: str, figsize: FigSize):
     chart_config_file_path = (
         get_settings().charts_output_dir / chart_name / STANDARD_CHARTS_CONFIG
     )
@@ -103,4 +107,12 @@ def create_chart(chart_name: str):
         chart_params=config_model.chart_params,
     )
 
-    return fig
+    return [
+        dcc.Graph(
+            figure=fig,
+            style={
+                "width": f"{figsize.width}px",
+                "height": f"{figsize.height}px",
+            },
+        )
+    ]
