@@ -32,8 +32,6 @@ def create_categorical_filter(df: pd.DataFrame, filter: ColumnFilter):
         {"label": k, "value": k} for k in sorted(df[filter.column].unique())
     ]
 
-    default_value = [cat["value"] for cat in categorical_selection]
-
     dropdown = html.Div(
         [
             dcc.Markdown(f"**{filter.column.title()}**"),
@@ -44,7 +42,6 @@ def create_categorical_filter(df: pd.DataFrame, filter: ColumnFilter):
                         multi=True,
                         options=categorical_selection,
                         searchable=True,
-                        value=default_value,
                     )
                 ]
             ),
@@ -58,7 +55,6 @@ def create_categorical_filter(df: pd.DataFrame, filter: ColumnFilter):
                         options=[
                             {"label": "Select All", "value": SELECT_ALL_VALUE}
                         ],
-                        value=[SELECT_ALL_VALUE],
                     )
                 ]
             ),

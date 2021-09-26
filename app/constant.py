@@ -11,6 +11,7 @@ MAX_NUMBER_FILTERS = 5
 
 # CALLBACK TYPES
 COLUMN_FILTER_CAT = "column-filter-categorical"
+COLUMN_FILTER_NUM = "column-filter-numerical"
 COLUMN_FILTER_SELECT_ALL = "column-filter-select-all"
 SELECT_ALL_VALUE = "select-all"
 

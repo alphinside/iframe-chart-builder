@@ -27,7 +27,7 @@ router = APIRouter()
     name="upload data",
 )
 async def upload(
-    table_name: str = Form(""),
+    table_name: str = Form("", example="example_choropleth_map"),
     error_if_exist: bool = Form(True),
     data: UploadFile = File(...),
 ):

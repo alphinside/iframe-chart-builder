@@ -25,6 +25,28 @@ class ChartBuilderRequest(BaseModel):
 
         return values
 
+    class Config:
+        schema_extra = {
+            "example": {
+                "table_name": "example_bar_chart_long",
+                "chart_name": "example_bar_long",
+                "chart_type": "bar",
+                "chart_params": {
+                    "title": "Medal Winnings",
+                    "column_for_x": "nation",
+                    "column_for_y": "count",
+                    "column_for_color": "medal",
+                    "filters": [
+                        {"column": "medal", "type": "categorical"},
+                        {"column": "count", "type": "numerical"},
+                    ],
+                },
+            },
+            "all_chart_params": {
+                k: v.schema_json(indent=2) for k, v in TYPE_PARAMS_MAP.items()
+            },
+        }
+
 
 class FigCSSArgs(BaseModel):
     width: Optional[str] = Field(None, alias="figWidth")

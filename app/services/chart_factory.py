@@ -3,19 +3,17 @@ from pathlib import Path
 from typing import Type
 
 import pandas as pd
-from dash import dcc, html
 from fastapi import HTTPException
 
 from app.config import get_settings
 from app.constant import STANDARD_CHARTS_CONFIG, ChartTypes
 from app.data_manager import get_data
 from app.schema.params import BaseChartParams
-from app.schema.requests import ChartBuilderRequest, FigCSSArgs
+from app.schema.requests import ChartBuilderRequest
 from app.services.chart_builder import ChartBuilderInterface
 from app.services.chart_builder.bar import BarChartBuilder
 from app.services.chart_builder.choropleth_map import ChoroplethMapBuilder
-from app.services.dash_layout.controls import create_filters_control
-from app.utils import read_config, serialize_config
+from app.utils import serialize_config
 
 
 class ChartBuilderFactory:
@@ -75,42 +73,3 @@ class ChartBuilderService:
 factory = ChartBuilderFactory()
 factory.register_type(ChartTypes.bar, BarChartBuilder)
 factory.register_type(ChartTypes.choropleth_map, ChoroplethMapBuilder)
-
-
-def create_chart(chart_name: str, fig_css_args: FigCSSArgs):
-    chart_config_file_path = (
-        get_settings().charts_output_dir / chart_name / STANDARD_CHARTS_CONFIG
-    )
-
-    if not chart_config_file_path.exists():
-        raise FileNotFoundError(
-            f"config chart `{chart_name}` not found "
-            f"in {chart_config_file_path}"
-        )
-
-    config_model = read_config(chart_config_file_path)
-    df = get_data(config_model.table_name)
-
-    chart_builder = ChartBuilderService(config_model.chart_type)
-    fig = chart_builder.build(
-        df=df,
-        chart_params=config_model.chart_params,
-    )
-
-    graph = html.Div(
-        dcc.Graph(figure=fig, style=fig_css_args.dict(exclude_none=True))
-    )
-
-    filters_control = create_filters_control(
-        df=df, filters=config_model.chart_params.filters
-    )
-
-    """
-    HTML Pattern
-
-    <div>
-        <div>{graph}</div>
-        <div>{filters}</div>
-    </div>
-    """
-    return [graph, filters_control]
