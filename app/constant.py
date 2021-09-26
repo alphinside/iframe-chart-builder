@@ -7,6 +7,13 @@ STANDARD_CHARTS_CONFIG = Path("charts_config.json")
 STANDARD_DATA_FILENAME = Path("data.gzip")
 DASH_MOUNT_ROUTE = "/dash"
 DASH_ROOT_ROUTE = DASH_MOUNT_ROUTE + "/"
+MAX_NUMBER_FILTERS = 5
+
+# CALLBACK TYPES
+COLUMN_FILTER_CAT = "column-filter-categorical"
+COLUMN_FILTER_NUM = "column-filter-numerical"
+COLUMN_FILTER_SELECT_ALL = "column-filter-select-all"
+SELECT_ALL_VALUE = "select-all"
 
 
 class MetaEnum(EnumMeta):
@@ -25,3 +32,8 @@ class BaseEnum(Enum, metaclass=MetaEnum):
 class ChartTypes(str, BaseEnum):
     bar = "bar"
     choropleth_map = "choropleth_map"
+
+
+class DataTypes(str, BaseEnum):
+    numerical = "numerical"
+    categorical = "categorical"

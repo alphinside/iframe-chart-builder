@@ -5,7 +5,8 @@ from typing import Type, Union
 import pandas as pd
 from pydantic import BaseModel
 
-from app.constant import DASH_MOUNT_ROUTE
+from app.config import get_settings
+from app.constant import DASH_MOUNT_ROUTE, STANDARD_CHARTS_CONFIG
 from app.schema.requests import ChartBuilderRequest
 
 
@@ -34,12 +35,22 @@ def serialize_config(
         f.write(config.json())
 
 
-def read_config(path: Union[str, PosixPath]):
-    return ChartBuilderRequest.parse_file(path)
-
-
 def construct_standard_dash_url(name: str, route: str) -> str:
     url = Path(DASH_MOUNT_ROUTE + route) / name
     url = urllib.parse.quote(str(url))
 
     return url
+
+
+def check_validate_chart_config(chart_name: str):
+    chart_config_file_path = (
+        get_settings().charts_output_dir / chart_name / STANDARD_CHARTS_CONFIG
+    )
+
+    if not chart_config_file_path.exists():
+        raise FileNotFoundError(
+            f"config chart `{chart_name}` not found "
+            f"in {chart_config_file_path}"
+        )
+
+    return ChartBuilderRequest.parse_file(chart_config_file_path)

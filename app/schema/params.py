@@ -1,10 +1,41 @@
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
+
+from app.constant import MAX_NUMBER_FILTERS, DataTypes
+
+
+class ColumnFilter(BaseModel):
+    column: str
+    type: DataTypes
+
+
+class MinMaxNumericalFilterState(BaseModel):
+    column: str
+    min: Union[int, float, None] = None
+    max: Union[int, float, None] = None
+
+
+class CategoricalFilterState(BaseModel):
+    column: str
+    values: List[Any] = []
+
+
+class AppliedFilters(BaseModel):
+    categorical: List[CategoricalFilterState] = []
+    numerical: List[MinMaxNumericalFilterState] = []
 
 
 class BaseChartParams(BaseModel):
     title: Optional[str] = None
+    filters: List[ColumnFilter] = []
+
+    @validator("filters")
+    def limit_number_of_filters(cls, v):
+        if len(v) > MAX_NUMBER_FILTERS:
+            v = v[:MAX_NUMBER_FILTERS]
+
+        return v
 
 
 class BarChartParams(BaseChartParams):

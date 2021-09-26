@@ -12,6 +12,7 @@ from app.constant import (
     STANDARD_DATA_FILENAME,
     TABLES_ROUTE,
 )
+from app.schema.params import AppliedFilters
 from app.utils import construct_standard_dash_url, read_data
 
 config.table_dfs = {}
@@ -40,6 +41,15 @@ def get_data(table_name: str, rewrite: bool = False) -> pd.DataFrame:
         ]
 
     return config.table_dfs[table_name].copy()
+
+
+def apply_filter(
+    df: pd.DataFrame, applied_filters: AppliedFilters
+) -> pd.DataFrame:
+    for filter in applied_filters.categorical:
+        df = df.query(f"{filter.column} == {filter.values}")
+
+    return df
 
 
 def register_table_path(table_name: str, table_snippet_url: str):

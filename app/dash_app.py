@@ -1,47 +1,26 @@
+import logging
 from http import HTTPStatus
 from urllib.parse import parse_qs
 
 import config
 import dash
-import pandas as pd
-import plotly.express as px
 from dash import dcc, html
-from dash.dependencies import Input, Output
+from dash.dependencies import ALL, MATCH, Input, Output, State
 from flask import Response
 
-from app.constant import DASH_ROOT_ROUTE
-from app.schema.requests import FigSize
-from app.services.chart_factory import create_chart
-from app.services.table import create_table_snippet
+from app.constant import (
+    COLUMN_FILTER_CAT,
+    COLUMN_FILTER_NUM,
+    COLUMN_FILTER_SELECT_ALL,
+    DASH_ROOT_ROUTE,
+    SELECT_ALL_VALUE,
+)
+from app.schema.params import AppliedFilters, CategoricalFilterState
+from app.schema.requests import FigCSSArgs
+from app.services.dash_layout.chart import create_chart_content, update_chart
+from app.services.dash_layout.table import create_table_snippet
 
 dash_app = dash.Dash(__name__, requests_pathname_prefix=DASH_ROOT_ROUTE)
-
-# assume you have a "long-form" data frame
-# see https://plotly.com/python/px-arguments/ for more options
-df = pd.DataFrame(
-    {
-        "Fruit": [
-            "Apples",
-            "Oranges",
-            "Bananas",
-            "Apples",
-            "Oranges",
-            "Bananas",
-        ],
-        "Amount": [4, 1, 2, 2, 4, 5],
-        "City": ["SF", "SF", "SF", "Montreal", "Montreal", "Montreal"],
-    }
-)
-
-fig = px.bar(
-    df,
-    x="Fruit",
-    y="Amount",
-    color="City",
-    barmode="group",
-    width=800,
-    height=600,
-)
 
 dash_app.layout = html.Div(
     [dcc.Location(id="url", refresh=False), html.Div(id="page-content")]
@@ -49,36 +28,145 @@ dash_app.layout = html.Div(
 
 
 @dash_app.callback(
+    output=Output({"type": COLUMN_FILTER_SELECT_ALL, "index": MATCH}, "value"),
+    inputs={
+        "selected_fields": Input(
+            {"type": COLUMN_FILTER_CAT, "index": MATCH}, "value"
+        ),
+        "all_options": State(
+            {"type": COLUMN_FILTER_CAT, "index": MATCH}, "options"
+        ),
+    },
+)
+def select_all_cat_activation(selected_fields, all_options):
+    if selected_fields is not None and len(selected_fields) == len(
+        all_options
+    ):
+        return [SELECT_ALL_VALUE]
+
+    return []
+
+
+@dash_app.callback(
+    output=Output({"type": COLUMN_FILTER_CAT, "index": MATCH}, "value"),
+    inputs={
+        "selected_fields": Input(
+            {"type": COLUMN_FILTER_SELECT_ALL, "index": MATCH}, "value"
+        ),
+        "all_options": State(
+            {"type": COLUMN_FILTER_CAT, "index": MATCH}, "options"
+        ),
+        "active_state": State(
+            {"type": COLUMN_FILTER_CAT, "index": MATCH}, "value"
+        ),
+    },
+)
+def link_select_all_to_multi_select(
+    selected_fields, all_options, active_state
+):
+    if selected_fields == [SELECT_ALL_VALUE]:
+        return [option["value"] for option in all_options]
+
+    return active_state
+
+
+@dash_app.callback(
     Output("page-content", "children"),
     [Input("url", "pathname"), Input("url", "search")],
 )
-def display_page(pathname, search):
+def display_initial_page(pathname, search):
     query = parse_qs(search.strip("?"))
-    figsize = FigSize.parse_obj(query)
-    fig = None
+    fig_css_args = FigCSSArgs.parse_obj(query)
 
     try:
         if pathname.startswith("/dash/charts"):
             if pathname in config.charts:
-                fig = create_chart(config.charts[pathname])
-        elif pathname.startswith("/dash/tables"):
+                return create_chart_content(
+                    chart_name=config.charts[pathname],
+                    fig_css_args=fig_css_args,
+                )
+
+        if pathname.startswith("/dash/tables"):
             if pathname in config.table_snippets:
-                fig = create_table_snippet(config.table_snippets[pathname])
-        else:
-            Response("404 Not Found", HTTPStatus.NOT_FOUND)
-            return html.Div("404 Not Found")
+                return create_table_snippet(
+                    table_name=config.table_snippets[pathname],
+                    fig_css_args=fig_css_args,
+                )
 
-        if fig is None:
-            Response("404 Not Found", HTTPStatus.NOT_FOUND)
-            return html.Div("404 Not Found")
+        Response("404 Not Found", HTTPStatus.NOT_FOUND)
+        return [html.H1("404 Not Found")]
 
-        fig.layout.width = figsize.width
-        fig.layout.height = figsize.height
-
-        return html.Div([dcc.Graph(figure=fig)])
     except Exception as e:
         Response(
             f"500 Internal Server Error : {e}",
             HTTPStatus.INTERNAL_SERVER_ERROR,
         )
-        return html.Div(f"500 Internal Server Error : {e}")
+        return [html.H1(f"500 Internal Server Error : {e}")]
+
+
+@dash_app.callback(
+    output=Output("chart", "figure"),
+    inputs={
+        "cat_values": Input(
+            {"type": COLUMN_FILTER_CAT, "index": ALL}, "value"
+        ),
+        "num_values": Input(
+            {"type": COLUMN_FILTER_NUM, "index": ALL}, "value"
+        ),
+        "cat_options": State(
+            {"type": COLUMN_FILTER_CAT, "index": ALL}, "options"
+        ),
+        "cat_id": State({"type": COLUMN_FILTER_CAT, "index": ALL}, "id"),
+        "num_options": State(
+            {"type": COLUMN_FILTER_NUM, "index": ALL}, "options"
+        ),
+        "num_id": State({"type": COLUMN_FILTER_NUM, "index": ALL}, "id"),
+        "pathname": State("url", "pathname"),
+        "current_fig": State("chart", "figure"),
+    },
+)
+def update_chart_based_on_filter(
+    cat_values,
+    num_values,
+    cat_options,
+    num_options,
+    cat_id,
+    num_id,
+    pathname,
+    current_fig,
+):
+    ctx = dash.callback_context
+
+    if not ctx.triggered:
+        return current_fig
+
+    applied_filters = _build_filters(
+        cat_values, num_values, cat_options, num_options, cat_id, num_id
+    )
+
+    try:
+        updated_fig = update_chart(
+            chart_name=config.charts[pathname],
+            applied_filters=applied_filters,
+        )
+
+        return updated_fig
+    except Exception as e:
+        logging.error(e)
+        return current_fig
+
+
+# TODO handle numerical
+def _build_filters(
+    cat_values, num_values, cat_options, num_options, cat_id, num_id
+) -> AppliedFilters:
+    cat_filters = []
+
+    for values, options, column in zip(cat_values, cat_options, cat_id):
+        if values is None or len(values) == 0 or len(values) == len(options):
+            continue
+
+        filter = CategoricalFilterState(column=column["index"], values=values)
+        cat_filters.append(filter)
+
+    return AppliedFilters(categorical=cat_filters)
