@@ -9,6 +9,11 @@ DASH_MOUNT_ROUTE = "/dash"
 DASH_ROOT_ROUTE = DASH_MOUNT_ROUTE + "/"
 MAX_NUMBER_FILTERS = 5
 
+# CALLBACK TYPES
+COLUMN_FILTER_CAT = "column-filter-categorical"
+COLUMN_FILTER_SELECT_ALL = "column-filter-select-all"
+SELECT_ALL_VALUE = "select-all"
+
 
 class MetaEnum(EnumMeta):
     def __contains__(cls, item):

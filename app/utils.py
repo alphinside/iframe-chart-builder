@@ -34,7 +34,7 @@ def serialize_config(
         f.write(config.json())
 
 
-def read_config(path: Union[str, PosixPath]):
+def read_config(path: Union[str, PosixPath]) -> Type[ChartBuilderRequest]:
     return ChartBuilderRequest.parse_file(path)
 
 
