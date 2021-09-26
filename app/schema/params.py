@@ -40,7 +40,7 @@ class BaseChartParams(BaseModel):
 
 class BarChartParams(BaseChartParams):
     column_for_x: str
-    column_for_y: List[str]
+    column_for_y: Union[List[str], str]
     column_for_color: Optional[str] = None
 
     @validator("column_for_y")
