@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 from app.config import get_settings
 from app.constant import DASH_MOUNT_ROUTE, STANDARD_CHARTS_CONFIG
-from app.schema.requests import ChartBuilderRequest
+from app.schema.requests import TYPE_PARAMS_MAP, BaseChartBuilderRequest
 
 
 def serialize_data(
@@ -53,4 +53,9 @@ def check_validate_chart_config(chart_name: str):
             f"in {chart_config_file_path}"
         )
 
-    return ChartBuilderRequest.parse_file(chart_config_file_path)
+    base_config = BaseChartBuilderRequest.parse_file(chart_config_file_path)
+    base_config.chart_params = TYPE_PARAMS_MAP[
+        base_config.chart_type
+    ].parse_obj(base_config.chart_params)
+
+    return base_config

@@ -1,4 +1,5 @@
 from http import HTTPStatus
+from typing import Type
 
 import pandas as pd
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
@@ -6,7 +7,11 @@ from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from app.config import get_settings
 from app.constant import CHARTS_ROUTE, STANDARD_DATA_FILENAME, TABLES_ROUTE
 from app.data_manager import register_chart_path, register_table_path
-from app.schema.requests import ChartBuilderRequest
+from app.schema.requests import (
+    BarChartBuilderRequest,
+    BaseChartBuilderRequest,
+    ChoroplethMapBuilderRequest,
+)
 from app.schema.response import (
     ChartBuilderData,
     ChartBuilderResponse,
@@ -68,13 +73,7 @@ async def upload(
     )
 
 
-@router.post(
-    "/new-chart",
-    response_model=ChartBuilderResponse,
-    summary="Create new chart iframe",
-    name="create_new_chart",
-)
-async def create(request: ChartBuilderRequest):
+def register_chart_config(request: Type[BaseChartBuilderRequest]):
     service = ChartBuilderService(request.chart_type)
     service.load_and_evaluate_data(
         table_name=request.table_name, chart_params=request.chart_params
@@ -86,6 +85,34 @@ async def create(request: ChartBuilderRequest):
     )
 
     register_chart_path(chart_name=request.chart_name, chart_url=chart_url)
+
+    return chart_url
+
+
+@router.post(
+    "/new-chart/bar",
+    response_model=ChartBuilderResponse,
+    summary="Create new bar chart iframe",
+    name="create_new_bar_chart",
+)
+async def register_new_bar_chart(request: BarChartBuilderRequest):
+    chart_url = register_chart_config(request)
+
+    return ChartBuilderResponse(
+        data=ChartBuilderData(
+            chart_name=request.chart_name, chart_url=chart_url
+        )
+    )
+
+
+@router.post(
+    "/new-chart/choropleth_map",
+    response_model=ChartBuilderResponse,
+    summary="Create new choropleth map chart iframe",
+    name="create_new_choropleth_map_chart",
+)
+async def register_new_choropleth_map(request: ChoroplethMapBuilderRequest):
+    chart_url = register_chart_config(request)
 
     return ChartBuilderResponse(
         data=ChartBuilderData(
