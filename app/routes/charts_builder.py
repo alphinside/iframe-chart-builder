@@ -1,4 +1,3 @@
-import shutil
 from http import HTTPStatus
 from typing import Type
 
@@ -17,7 +16,6 @@ from app.config import get_settings
 from app.constant import (
     CHARTS_ROUTE,
     STANDARD_DATA_FILENAME,
-    STANDARD_OLD_STYLE_CONFIG,
     STANDARD_STYLE_CONFIG,
     TABLES_ROUTE,
     ResourceType,
@@ -123,7 +121,9 @@ def register_chart_config(request: Type[BaseChartBuilderRequest]):
     return chart_url
 
 
-@router.post("/{resource}/{name}/style-config")
+@router.post(
+    "/{resource}/{name}/style-config", response_model=GeneralSuccessMessage
+)
 async def update_style_config(
     resource: ResourceType = Path(..., example="chart"),
     name: str = Path(..., example="provinces_residents"),
@@ -141,16 +141,23 @@ async def update_style_config(
 ):
     resource_path = validate_resource_existence(name=name, resource=resource)
 
-    style_config = resource_path / STANDARD_STYLE_CONFIG
-    old_style_config = resource_path / STANDARD_OLD_STYLE_CONFIG
-
-    shutil.move(style_config, old_style_config)
-
     serialize_config(
         config=style, output_dir=resource_path, filename=STANDARD_STYLE_CONFIG
     )
 
     return GeneralSuccessMessage(data=SuccessMessage())
+
+
+@router.get("/{resource}/{name}/style-config", response_model=ChartStyle)
+async def get_style_config(
+    resource: ResourceType = Path(..., example="chart"),
+    name: str = Path(..., example="provinces_residents"),
+):
+    resource_path = validate_resource_existence(name=name, resource=resource)
+
+    style_config = resource_path / STANDARD_STYLE_CONFIG
+
+    return ChartStyle.parse_file(style_config)
 
 
 @router.post(
