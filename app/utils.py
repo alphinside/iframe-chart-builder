@@ -7,11 +7,10 @@ from pydantic import BaseModel
 
 from app.config import get_settings
 from app.constant import (
-    CHARTS_ROUTE,
     DASH_MOUNT_ROUTE,
     STANDARD_CHARTS_CONFIG,
     STANDARD_STYLE_CONFIG,
-    TABLES_ROUTE,
+    ResourceType,
 )
 from app.schema.requests import (
     TYPE_PARAMS_MAP,
@@ -71,16 +70,16 @@ def check_validate_chart_config(chart_name: str):
     return base_config
 
 
-def check_validate_style_config(name: str, route: PosixPath):
-    if route == CHARTS_ROUTE:
+def check_validate_style_config(name: str, resource: ResourceType):
+    if resource == ResourceType.chart:
         style_config = (
             get_settings().charts_output_dir / name / STANDARD_STYLE_CONFIG
         )
-    elif route == TABLES_ROUTE:
+    elif resource == ResourceType.table:
         style_config = (
             get_settings().tables_output_dir / name / STANDARD_STYLE_CONFIG
         )
     else:
-        raise Exception(f"style config of {route}{name} not found")
+        raise Exception(f"style config of `{resource} {name}` not found")
 
     return ChartStyle.parse_file(style_config)

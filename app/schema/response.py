@@ -1,7 +1,7 @@
 from pathlib import PosixPath
 from typing import Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class UploadSuccessData(BaseModel):
@@ -20,3 +20,11 @@ class UploadSuccessResponse(BaseModel):
 
 class ChartBuilderResponse(BaseModel):
     data: ChartBuilderData
+
+
+class SuccessMessage(BaseModel):
+    message: str = Field("success", const=True)
+
+
+class GeneralSuccessMessage(BaseModel):
+    data: SuccessMessage

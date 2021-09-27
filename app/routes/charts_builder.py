@@ -1,31 +1,48 @@
+import shutil
 from http import HTTPStatus
 from typing import Type
 
 import pandas as pd
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from fastapi import (
+    APIRouter,
+    Body,
+    File,
+    Form,
+    HTTPException,
+    Path,
+    UploadFile,
+)
 
 from app.config import get_settings
 from app.constant import (
     CHARTS_ROUTE,
     STANDARD_DATA_FILENAME,
+    STANDARD_OLD_STYLE_CONFIG,
     STANDARD_STYLE_CONFIG,
     TABLES_ROUTE,
+    ResourceType,
 )
 from app.data_manager import register_chart_path, register_table_path
 from app.schema.requests import (
     BarChartBuilderRequest,
     BaseChartBuilderRequest,
+    ChartStyle,
     ChoroplethMapBuilderRequest,
 )
 from app.schema.response import (
     ChartBuilderData,
     ChartBuilderResponse,
+    GeneralSuccessMessage,
+    SuccessMessage,
     UploadSuccessData,
     UploadSuccessResponse,
 )
 from app.services.chart_factory import ChartBuilderService
 from app.services.dash_layout.table import create_default_table_style_config
-from app.services.validator import validate_file_suffix
+from app.services.validator import (
+    validate_file_suffix,
+    validate_resource_existence,
+)
 from app.utils import (
     construct_standard_dash_url,
     serialize_config,
@@ -36,7 +53,7 @@ router = APIRouter()
 
 
 @router.post(
-    "/upload-data",
+    "/table/upload",
     response_model=UploadSuccessResponse,
     summary="Upload new data",
     name="upload data",
@@ -106,8 +123,38 @@ def register_chart_config(request: Type[BaseChartBuilderRequest]):
     return chart_url
 
 
+@router.post("/{resource}/{name}/style-config")
+async def update_style_config(
+    resource: ResourceType = Path(..., example="chart"),
+    name: str = Path(..., example="provinces_residents"),
+    style: ChartStyle = Body(
+        ...,
+        example=ChartStyle(
+            figure={"height": "50vh", "width": "80vh"},
+            filters_parent={
+                "height": "50vh",
+                "width": "20vh",
+            },
+            table={"width": "50vh", "height": "30vh"},
+        ),
+    ),
+):
+    resource_path = validate_resource_existence(name=name, resource=resource)
+
+    style_config = resource_path / STANDARD_STYLE_CONFIG
+    old_style_config = resource_path / STANDARD_OLD_STYLE_CONFIG
+
+    shutil.move(style_config, old_style_config)
+
+    serialize_config(
+        config=style, output_dir=resource_path, filename=STANDARD_STYLE_CONFIG
+    )
+
+    return GeneralSuccessMessage(data=SuccessMessage())
+
+
 @router.post(
-    "/new-chart/bar",
+    "/chart/bar",
     response_model=ChartBuilderResponse,
     summary="Create new bar chart iframe",
     name="create_new_bar_chart",
@@ -123,7 +170,7 @@ async def register_new_bar_chart(request: BarChartBuilderRequest):
 
 
 @router.post(
-    "/new-chart/choropleth_map",
+    "/chart/choropleth_map",
     response_model=ChartBuilderResponse,
     summary="Create new choropleth map chart iframe",
     name="create_new_choropleth_map_chart",

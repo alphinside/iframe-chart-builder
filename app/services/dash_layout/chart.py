@@ -3,7 +3,7 @@ from typing import Optional, Type
 import pandas as pd
 from dash import dcc, html
 
-from app.constant import CHARTS_ROUTE
+from app.constant import ResourceType
 from app.data_manager import apply_filter, get_data
 from app.schema.params import AppliedFilters
 from app.schema.requests import BaseChartBuilderRequest
@@ -25,6 +25,10 @@ def create_chart(
         df=df,
         chart_params=config_model.chart_params,
     )
+    fig.update_layout(
+        autosize=True,
+    )
+    fig.update_yaxes(automargin=True)
 
     return fig
 
@@ -36,9 +40,11 @@ def create_chart_content(
     df = get_data(config_model.table_name)
     fig = create_chart(df=df, config_model=config_model)
 
-    style = check_validate_style_config(name=chart_name, route=CHARTS_ROUTE)
+    style = check_validate_style_config(
+        name=chart_name, resource=ResourceType.chart
+    )
 
-    graph = html.Div([dcc.Graph(id="chart", figure=fig)], style=style.figure)
+    graph = dcc.Graph(id="chart", figure=fig, style=style.figure)
 
     filters_control = create_filters_control(
         df=df,
@@ -54,7 +60,7 @@ def create_chart_content(
         <div>{filters}</div>
     </div>
     """
-    return [graph, filters_control]
+    return html.Div([graph, filters_control])
 
 
 def update_chart(chart_name: str, applied_filters: AppliedFilters):
