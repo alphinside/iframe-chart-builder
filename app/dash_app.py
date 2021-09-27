@@ -8,11 +8,14 @@ from dash.dependencies import ALL, MATCH, Input, Output, State
 from flask import Response
 
 from app.constant import (
+    CHARTS_ROUTE,
     COLUMN_FILTER_CAT,
     COLUMN_FILTER_NUM,
     COLUMN_FILTER_SELECT_ALL,
+    DASH_MOUNT_ROUTE,
     DASH_ROOT_ROUTE,
     SELECT_ALL_VALUE,
+    TABLES_ROUTE,
 )
 from app.schema.params import AppliedFilters, CategoricalFilterState
 from app.services.dash_layout.chart import create_chart_content, update_chart
@@ -74,11 +77,11 @@ def link_select_all_to_multi_select(
 )
 def display_initial_page(pathname):
     try:
-        if pathname.startswith("/dash/charts"):
+        if pathname.startswith(DASH_MOUNT_ROUTE + CHARTS_ROUTE):
             if pathname in config.charts:
                 return create_chart_content(chart_name=config.charts[pathname])
 
-        if pathname.startswith("/dash/tables"):
+        if pathname.startswith(DASH_MOUNT_ROUTE + TABLES_ROUTE):
             if pathname in config.table_snippets:
                 return create_table_snippet(
                     table_name=config.table_snippets[pathname]

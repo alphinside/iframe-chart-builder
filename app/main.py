@@ -31,17 +31,6 @@ def get_app() -> FastAPI:
     create_dir_dependencies()
     populate_persisted_data()
 
-    # app.mount(
-    #     CHARTS_ROUTE,
-    #     StaticFiles(directory=get_settings().charts_output_dir),
-    #     name="charts",
-    # )
-    # app.mount(
-    #     TABLES_ROUTE,
-    #     StaticFiles(directory=get_settings().table_snippet_output_dir),
-    #     name="tables",
-    # )
-
     return app
 
 

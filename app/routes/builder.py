@@ -122,6 +122,38 @@ def register_chart_config(request: Type[BaseChartBuilderRequest]):
 
 
 @router.post(
+    "/chart/bar",
+    response_model=ChartBuilderResponse,
+    summary="Create new bar chart iframe",
+    name="create_new_bar_chart",
+)
+async def register_new_bar_chart(request: BarChartBuilderRequest):
+    chart_url = register_chart_config(request)
+
+    return ChartBuilderResponse(
+        data=ChartBuilderData(
+            chart_name=request.chart_name, chart_url=chart_url
+        )
+    )
+
+
+@router.post(
+    "/chart/choropleth_map",
+    response_model=ChartBuilderResponse,
+    summary="Create new choropleth map chart iframe",
+    name="create_new_choropleth_map_chart",
+)
+async def register_new_choropleth_map(request: ChoroplethMapBuilderRequest):
+    chart_url = register_chart_config(request)
+
+    return ChartBuilderResponse(
+        data=ChartBuilderData(
+            chart_name=request.chart_name, chart_url=chart_url
+        )
+    )
+
+
+@router.post(
     "/{resource}/{name}/style-config", response_model=GeneralSuccessMessage
 )
 async def update_style_config(
@@ -158,35 +190,3 @@ async def get_style_config(
     style_config = resource_path / STANDARD_STYLE_CONFIG
 
     return ChartStyle.parse_file(style_config)
-
-
-@router.post(
-    "/chart/bar",
-    response_model=ChartBuilderResponse,
-    summary="Create new bar chart iframe",
-    name="create_new_bar_chart",
-)
-async def register_new_bar_chart(request: BarChartBuilderRequest):
-    chart_url = register_chart_config(request)
-
-    return ChartBuilderResponse(
-        data=ChartBuilderData(
-            chart_name=request.chart_name, chart_url=chart_url
-        )
-    )
-
-
-@router.post(
-    "/chart/choropleth_map",
-    response_model=ChartBuilderResponse,
-    summary="Create new choropleth map chart iframe",
-    name="create_new_choropleth_map_chart",
-)
-async def register_new_choropleth_map(request: ChoroplethMapBuilderRequest):
-    chart_url = register_chart_config(request)
-
-    return ChartBuilderResponse(
-        data=ChartBuilderData(
-            chart_name=request.chart_name, chart_url=chart_url
-        )
-    )
