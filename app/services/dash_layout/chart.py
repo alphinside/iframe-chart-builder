@@ -3,12 +3,13 @@ from typing import Optional, Type
 import pandas as pd
 from dash import dcc, html
 
+from app.constant import CHARTS_ROUTE
 from app.data_manager import apply_filter, get_data
 from app.schema.params import AppliedFilters
 from app.schema.requests import BaseChartBuilderRequest
 from app.services.chart_factory import ChartBuilderService
 from app.services.dash_layout.controls import create_filters_control
-from app.utils import check_validate_chart_config
+from app.utils import check_validate_chart_config, check_validate_style_config
 
 
 def create_chart(
@@ -35,10 +36,14 @@ def create_chart_content(
     df = get_data(config_model.table_name)
     fig = create_chart(df=df, config_model=config_model)
 
-    graph = html.Div(dcc.Graph(id="chart", figure=fig))
+    style = check_validate_style_config(name=chart_name, route=CHARTS_ROUTE)
+
+    graph = html.Div([dcc.Graph(id="chart", figure=fig)], style=style.figure)
 
     filters_control = create_filters_control(
-        df=df, filters=config_model.chart_params.filters
+        df=df,
+        filters=config_model.chart_params.filters,
+        style=style.filters_parent,
     )
 
     """
