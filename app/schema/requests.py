@@ -16,9 +16,6 @@ StyleDict = Dict[str, Any]
 class ChartStyle(BaseModel):
     figure: Optional[StyleDict] = None
     filters_parent: Optional[StyleDict] = None
-
-
-class TableStyle(BaseModel):
     table: Optional[StyleDict] = None
 
 
