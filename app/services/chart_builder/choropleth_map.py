@@ -47,6 +47,7 @@ class ChoroplethMapBuilder(ChartBuilderInterface):
             center={"lat": -4.050027, "lon": 116.375442},
             zoom=chart_params.zoom_level,
             mapbox_style="open-street-map",
+            color_continuous_scale="Inferno",
         )
 
         return fig

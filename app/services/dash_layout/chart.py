@@ -1,11 +1,11 @@
-from typing import Optional
+from typing import Optional, Type
 
 import pandas as pd
 from dash import dcc, html
 
 from app.data_manager import apply_filter, get_data
 from app.schema.params import AppliedFilters
-from app.schema.requests import ChartBuilderRequest, FigCSSArgs
+from app.schema.requests import BaseChartBuilderRequest, FigCSSArgs
 from app.services.chart_factory import ChartBuilderService
 from app.services.dash_layout.controls import create_filters_control
 from app.utils import check_validate_chart_config
@@ -13,7 +13,7 @@ from app.utils import check_validate_chart_config
 
 def create_chart(
     df: pd.DataFrame,
-    config_model: ChartBuilderRequest,
+    config_model: Type[BaseChartBuilderRequest],
     applied_filters: Optional[AppliedFilters] = None,
 ):
     if applied_filters is not None:

@@ -17,10 +17,10 @@ class BarChartBuilder(ChartBuilderInterface):
         if chart_params.column_for_x not in df.columns:
             columns_not_found.append(chart_params.column_for_x)
 
-        if isinstance(chart_params.column_for_x, str):
-            y_columns = [chart_params.column_for_x]
+        if isinstance(chart_params.column_for_y, str):
+            y_columns = [chart_params.column_for_y]
         else:
-            y_columns = chart_params.column_for_x
+            y_columns = chart_params.column_for_y
 
         for column in y_columns:
             if column not in df.columns:
@@ -28,7 +28,7 @@ class BarChartBuilder(ChartBuilderInterface):
 
         if chart_params.column_for_color is not None:
             if chart_params.column_for_color not in df.columns:
-                columns_not_found.append(column)
+                columns_not_found.append(chart_params.column_for_color)
 
         if len(columns_not_found) != 0:
             raise HTTPException(

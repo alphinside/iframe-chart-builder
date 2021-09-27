@@ -9,7 +9,7 @@ from app.config import get_settings
 from app.constant import STANDARD_CHARTS_CONFIG, ChartTypes
 from app.data_manager import get_data
 from app.schema.params import BaseChartParams
-from app.schema.requests import ChartBuilderRequest
+from app.schema.requests import BaseChartBuilderRequest
 from app.services.chart_builder import ChartBuilderInterface
 from app.services.chart_builder.bar import BarChartBuilder
 from app.services.chart_builder.choropleth_map import ChoroplethMapBuilder
@@ -53,7 +53,7 @@ class ChartBuilderService:
             df=df, filters=chart_params.filters
         )
 
-    def dump_config(self, config: ChartBuilderRequest) -> ChartBuilderRequest:
+    def dump_config(self, config: Type[BaseChartBuilderRequest]):
         chart_config_dir = get_settings().charts_output_dir / Path(
             config.chart_name
         )
