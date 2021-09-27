@@ -5,7 +5,7 @@ from dash import dcc, html
 
 from app.data_manager import apply_filter, get_data
 from app.schema.params import AppliedFilters
-from app.schema.requests import BaseChartBuilderRequest, FigCSSArgs
+from app.schema.requests import BaseChartBuilderRequest
 from app.services.chart_factory import ChartBuilderService
 from app.services.dash_layout.controls import create_filters_control
 from app.utils import check_validate_chart_config
@@ -30,17 +30,12 @@ def create_chart(
 
 def create_chart_content(
     chart_name: str,
-    fig_css_args: FigCSSArgs,
 ):
     config_model = check_validate_chart_config(chart_name)
     df = get_data(config_model.table_name)
     fig = create_chart(df=df, config_model=config_model)
 
-    graph = html.Div(
-        dcc.Graph(
-            id="chart", figure=fig, style=fig_css_args.dict(exclude_none=True)
-        )
-    )
+    graph = html.Div(dcc.Graph(id="chart", figure=fig))
 
     filters_control = create_filters_control(
         df=df, filters=config_model.chart_params.filters

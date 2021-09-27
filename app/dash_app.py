@@ -1,6 +1,5 @@
 import logging
 from http import HTTPStatus
-from urllib.parse import parse_qs
 
 import config
 import dash
@@ -16,7 +15,6 @@ from app.constant import (
     SELECT_ALL_VALUE,
 )
 from app.schema.params import AppliedFilters, CategoricalFilterState
-from app.schema.requests import FigCSSArgs
 from app.services.dash_layout.chart import create_chart_content, update_chart
 from app.services.dash_layout.table import create_table_snippet
 
@@ -72,25 +70,18 @@ def link_select_all_to_multi_select(
 
 @dash_app.callback(
     Output("page-content", "children"),
-    [Input("url", "pathname"), Input("url", "search")],
+    Input("url", "pathname"),
 )
-def display_initial_page(pathname, search):
-    query = parse_qs(search.strip("?"))
-    fig_css_args = FigCSSArgs.parse_obj(query)
-
+def display_initial_page(pathname):
     try:
         if pathname.startswith("/dash/charts"):
             if pathname in config.charts:
-                return create_chart_content(
-                    chart_name=config.charts[pathname],
-                    fig_css_args=fig_css_args,
-                )
+                return create_chart_content(chart_name=config.charts[pathname])
 
         if pathname.startswith("/dash/tables"):
             if pathname in config.table_snippets:
                 return create_table_snippet(
-                    table_name=config.table_snippets[pathname],
-                    fig_css_args=fig_css_args,
+                    table_name=config.table_snippets[pathname]
                 )
 
         Response("404 Not Found", HTTPStatus.NOT_FOUND)

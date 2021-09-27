@@ -5,7 +5,12 @@ import pandas as pd
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 
 from app.config import get_settings
-from app.constant import CHARTS_ROUTE, STANDARD_DATA_FILENAME, TABLES_ROUTE
+from app.constant import (
+    CHARTS_ROUTE,
+    STANDARD_DATA_FILENAME,
+    STANDARD_STYLE_CONFIG,
+    TABLES_ROUTE,
+)
 from app.data_manager import register_chart_path, register_table_path
 from app.schema.requests import (
     BarChartBuilderRequest,
@@ -19,8 +24,13 @@ from app.schema.response import (
     UploadSuccessResponse,
 )
 from app.services.chart_factory import ChartBuilderService
+from app.services.dash_layout.table import create_default_table_style_config
 from app.services.validator import validate_file_suffix
-from app.utils import construct_standard_dash_url, serialize_data
+from app.utils import (
+    construct_standard_dash_url,
+    serialize_config,
+    serialize_data,
+)
 
 router = APIRouter()
 
@@ -60,6 +70,13 @@ async def upload(
 
     table_snippet_url = construct_standard_dash_url(
         name=table_name, route=TABLES_ROUTE
+    )
+
+    table_default_style = create_default_table_style_config()
+    serialize_config(
+        config=table_default_style,
+        output_dir=output_dir,
+        filename=STANDARD_STYLE_CONFIG,
     )
 
     register_table_path(
