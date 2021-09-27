@@ -6,8 +6,17 @@ import pandas as pd
 from pydantic import BaseModel
 
 from app.config import get_settings
-from app.constant import DASH_MOUNT_ROUTE, STANDARD_CHARTS_CONFIG
-from app.schema.requests import TYPE_PARAMS_MAP, BaseChartBuilderRequest
+from app.constant import (
+    DASH_MOUNT_ROUTE,
+    STANDARD_CHARTS_CONFIG,
+    STANDARD_STYLE_CONFIG,
+    ResourceType,
+)
+from app.schema.requests import (
+    TYPE_PARAMS_MAP,
+    BaseChartBuilderRequest,
+    ChartStyle,
+)
 
 
 def serialize_data(
@@ -59,3 +68,18 @@ def check_validate_chart_config(chart_name: str):
     ].parse_obj(base_config.chart_params)
 
     return base_config
+
+
+def check_validate_style_config(name: str, resource: ResourceType):
+    if resource == ResourceType.chart:
+        style_config = (
+            get_settings().charts_output_dir / name / STANDARD_STYLE_CONFIG
+        )
+    elif resource == ResourceType.table:
+        style_config = (
+            get_settings().tables_output_dir / name / STANDARD_STYLE_CONFIG
+        )
+    else:
+        raise Exception(f"style config of `{resource} {name}` not found")
+
+    return ChartStyle.parse_file(style_config)

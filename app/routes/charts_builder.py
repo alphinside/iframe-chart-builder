@@ -2,31 +2,56 @@ from http import HTTPStatus
 from typing import Type
 
 import pandas as pd
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from fastapi import (
+    APIRouter,
+    Body,
+    File,
+    Form,
+    HTTPException,
+    Path,
+    UploadFile,
+)
 
 from app.config import get_settings
-from app.constant import CHARTS_ROUTE, STANDARD_DATA_FILENAME, TABLES_ROUTE
+from app.constant import (
+    CHARTS_ROUTE,
+    STANDARD_DATA_FILENAME,
+    STANDARD_STYLE_CONFIG,
+    TABLES_ROUTE,
+    ResourceType,
+)
 from app.data_manager import register_chart_path, register_table_path
 from app.schema.requests import (
     BarChartBuilderRequest,
     BaseChartBuilderRequest,
+    ChartStyle,
     ChoroplethMapBuilderRequest,
 )
 from app.schema.response import (
     ChartBuilderData,
     ChartBuilderResponse,
+    GeneralSuccessMessage,
+    SuccessMessage,
     UploadSuccessData,
     UploadSuccessResponse,
 )
 from app.services.chart_factory import ChartBuilderService
-from app.services.validator import validate_file_suffix
-from app.utils import construct_standard_dash_url, serialize_data
+from app.services.dash_layout.table import create_default_table_style_config
+from app.services.validator import (
+    validate_file_suffix,
+    validate_resource_existence,
+)
+from app.utils import (
+    construct_standard_dash_url,
+    serialize_config,
+    serialize_data,
+)
 
 router = APIRouter()
 
 
 @router.post(
-    "/upload-data",
+    "/table/upload",
     response_model=UploadSuccessResponse,
     summary="Upload new data",
     name="upload data",
@@ -62,6 +87,13 @@ async def upload(
         name=table_name, route=TABLES_ROUTE
     )
 
+    table_default_style = create_default_table_style_config()
+    serialize_config(
+        config=table_default_style,
+        output_dir=output_dir,
+        filename=STANDARD_STYLE_CONFIG,
+    )
+
     register_table_path(
         table_name=table_name, table_snippet_url=table_snippet_url
     )
@@ -90,7 +122,46 @@ def register_chart_config(request: Type[BaseChartBuilderRequest]):
 
 
 @router.post(
-    "/new-chart/bar",
+    "/{resource}/{name}/style-config", response_model=GeneralSuccessMessage
+)
+async def update_style_config(
+    resource: ResourceType = Path(..., example="chart"),
+    name: str = Path(..., example="provinces_residents"),
+    style: ChartStyle = Body(
+        ...,
+        example=ChartStyle(
+            figure={"height": "50vh", "width": "80vh"},
+            filters_parent={
+                "height": "50vh",
+                "width": "20vh",
+            },
+            table={"width": "50vh", "height": "30vh"},
+        ),
+    ),
+):
+    resource_path = validate_resource_existence(name=name, resource=resource)
+
+    serialize_config(
+        config=style, output_dir=resource_path, filename=STANDARD_STYLE_CONFIG
+    )
+
+    return GeneralSuccessMessage(data=SuccessMessage())
+
+
+@router.get("/{resource}/{name}/style-config", response_model=ChartStyle)
+async def get_style_config(
+    resource: ResourceType = Path(..., example="chart"),
+    name: str = Path(..., example="provinces_residents"),
+):
+    resource_path = validate_resource_existence(name=name, resource=resource)
+
+    style_config = resource_path / STANDARD_STYLE_CONFIG
+
+    return ChartStyle.parse_file(style_config)
+
+
+@router.post(
+    "/chart/bar",
     response_model=ChartBuilderResponse,
     summary="Create new bar chart iframe",
     name="create_new_bar_chart",
@@ -106,7 +177,7 @@ async def register_new_bar_chart(request: BarChartBuilderRequest):
 
 
 @router.post(
-    "/new-chart/choropleth_map",
+    "/chart/choropleth_map",
     response_model=ChartBuilderResponse,
     summary="Create new choropleth map chart iframe",
     name="create_new_choropleth_map_chart",

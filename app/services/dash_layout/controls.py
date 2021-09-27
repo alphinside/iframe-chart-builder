@@ -10,9 +10,12 @@ from app.constant import (
     DataTypes,
 )
 from app.schema.params import ColumnFilter
+from app.schema.requests import StyleDict
 
 
-def create_filters_control(df: pd.DataFrame, filters: List[ColumnFilter]):
+def create_filters_control(
+    df: pd.DataFrame, filters: List[ColumnFilter], style: StyleDict
+):
     created_filters = []
 
     for filter in filters:
@@ -24,7 +27,7 @@ def create_filters_control(df: pd.DataFrame, filters: List[ColumnFilter]):
         else:
             raise Exception("Unknown filter creation error")
 
-    return html.Div(created_filters)
+    return html.Div(created_filters, style=style)
 
 
 def create_categorical_filter(df: pd.DataFrame, filter: ColumnFilter):

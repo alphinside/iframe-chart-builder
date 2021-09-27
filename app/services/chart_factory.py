@@ -6,13 +6,18 @@ import pandas as pd
 from fastapi import HTTPException
 
 from app.config import get_settings
-from app.constant import STANDARD_CHARTS_CONFIG, ChartTypes
+from app.constant import (
+    STANDARD_CHARTS_CONFIG,
+    STANDARD_STYLE_CONFIG,
+    ChartTypes,
+)
 from app.data_manager import get_data
 from app.schema.params import BaseChartParams
 from app.schema.requests import BaseChartBuilderRequest
 from app.services.chart_builder import ChartBuilderInterface
 from app.services.chart_builder.bar import BarChartBuilder
 from app.services.chart_builder.choropleth_map import ChoroplethMapBuilder
+from app.services.dash_layout import create_default_chart_style
 from app.utils import serialize_config
 
 
@@ -62,6 +67,14 @@ class ChartBuilderService:
             config=config,
             output_dir=chart_config_dir,
             filename=STANDARD_CHARTS_CONFIG,
+        )
+
+        chart_default_style = create_default_chart_style()
+
+        serialize_config(
+            config=chart_default_style,
+            output_dir=chart_config_dir,
+            filename=STANDARD_STYLE_CONFIG,
         )
 
     def build(self, df: pd.DataFrame, chart_params: Type[BaseChartParams]):
