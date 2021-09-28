@@ -57,31 +57,21 @@ def create_categorical_filter(
     dropdown = html.Div(
         [
             dcc.Markdown(f"**{column_filter.column.title()}**"),
-            html.Div(
-                [
-                    dcc.Dropdown(
-                        id={
-                            "index": column_filter.column,
-                            "type": COLUMN_FILTER_CAT,
-                        },
-                        multi=True,
-                        options=categorical_selection,
-                        searchable=True,
-                    )
-                ]
+            dcc.Dropdown(
+                id={
+                    "index": column_filter.column,
+                    "type": COLUMN_FILTER_CAT,
+                },
+                multi=True,
+                options=categorical_selection,
+                searchable=True,
             ),
-            html.Div(
-                [
-                    dcc.Checklist(
-                        id={
-                            "index": column_filter.column,
-                            "type": COLUMN_FILTER_SELECT_ALL,
-                        },
-                        options=[
-                            {"label": "Select All", "value": SELECT_ALL_VALUE}
-                        ],
-                    )
-                ]
+            dcc.Checklist(
+                id={
+                    "index": column_filter.column,
+                    "type": COLUMN_FILTER_SELECT_ALL,
+                },
+                options=[{"label": "Select All", "value": SELECT_ALL_VALUE}],
             ),
         ],
         style=entity_style,
