@@ -10,14 +10,19 @@ from flask import Response
 from app.constant import (
     CHARTS_ROUTE,
     COLUMN_FILTER_CAT,
-    COLUMN_FILTER_NUM,
+    COLUMN_FILTER_NUM_MAX,
+    COLUMN_FILTER_NUM_MIN,
     COLUMN_FILTER_SELECT_ALL,
     DASH_MOUNT_ROUTE,
     DASH_ROOT_ROUTE,
     SELECT_ALL_VALUE,
     TABLES_ROUTE,
 )
-from app.schema.params import AppliedFilters, CategoricalFilterState
+from app.schema.params import (
+    AppliedFilters,
+    CategoricalFilterState,
+    MinMaxNumericalFilterState,
+)
 from app.services.dash_layout.chart import create_chart_content, update_chart
 from app.services.dash_layout.table import create_table_snippet
 
@@ -104,26 +109,34 @@ def display_initial_page(pathname):
         "cat_values": Input(
             {"type": COLUMN_FILTER_CAT, "index": ALL}, "value"
         ),
-        "num_values": Input(
-            {"type": COLUMN_FILTER_NUM, "index": ALL}, "value"
+        "num_values_min": Input(
+            {"type": COLUMN_FILTER_NUM_MIN, "index": ALL}, "value"
+        ),
+        "num_values_max": Input(
+            {"type": COLUMN_FILTER_NUM_MAX, "index": ALL}, "value"
         ),
         "cat_options": State(
             {"type": COLUMN_FILTER_CAT, "index": ALL}, "options"
         ),
-        "cat_id": State({"type": COLUMN_FILTER_CAT, "index": ALL}, "id"),
-        "num_options": State(
-            {"type": COLUMN_FILTER_NUM, "index": ALL}, "options"
+        "num_column_min": State(
+            {"type": COLUMN_FILTER_NUM_MIN, "index": ALL}, "min"
         ),
-        "num_id": State({"type": COLUMN_FILTER_NUM, "index": ALL}, "id"),
+        "num_column_max": State(
+            {"type": COLUMN_FILTER_NUM_MAX, "index": ALL}, "max"
+        ),
+        "cat_id": State({"type": COLUMN_FILTER_CAT, "index": ALL}, "id"),
+        "num_id": State({"type": COLUMN_FILTER_NUM_MIN, "index": ALL}, "id"),
         "pathname": State("url", "pathname"),
         "current_fig": State("chart", "figure"),
     },
 )
 def update_chart_based_on_filter(
     cat_values,
-    num_values,
+    num_values_min,
+    num_values_max,
     cat_options,
-    num_options,
+    num_column_min,
+    num_column_max,
     cat_id,
     num_id,
     pathname,
@@ -135,7 +148,14 @@ def update_chart_based_on_filter(
         return current_fig
 
     applied_filters = _build_filters(
-        cat_values, num_values, cat_options, num_options, cat_id, num_id
+        cat_values,
+        num_values_min,
+        num_values_max,
+        cat_options,
+        num_column_min,
+        num_column_max,
+        cat_id,
+        num_id,
     )
 
     try:
@@ -152,15 +172,42 @@ def update_chart_based_on_filter(
 
 # TODO handle numerical
 def _build_filters(
-    cat_values, num_values, cat_options, num_options, cat_id, num_id
+    cat_values,
+    num_values_min,
+    num_values_max,
+    cat_options,
+    num_column_min,
+    num_column_max,
+    cat_id,
+    num_id,
 ) -> AppliedFilters:
     cat_filters = []
+    num_filters = []
 
     for values, options, column in zip(cat_values, cat_options, cat_id):
         if values is None or len(values) == 0 or len(values) == len(options):
             continue
 
-        filter = CategoricalFilterState(column=column["index"], values=values)
-        cat_filters.append(filter)
+        column_filter = CategoricalFilterState(
+            column=column["index"], values=values
+        )
+        cat_filters.append(column_filter)
 
-    return AppliedFilters(categorical=cat_filters)
+    for values_min, values_max, column_min, column_max, column in zip(
+        num_values_min, num_values_max, num_column_min, num_column_max, num_id
+    ):
+        if (values_min is None or values_min < column_min) and (
+            values_max is None or values_max > column_max
+        ):
+            continue
+
+        column_filter = MinMaxNumericalFilterState(
+            column=column["index"],
+            column_min=column_min,
+            column_max=column_max,
+            values_min=values_min,
+            values_max=values_max,
+        )
+        num_filters.append(column_filter)
+
+    return AppliedFilters(categorical=cat_filters, numerical=num_filters)
