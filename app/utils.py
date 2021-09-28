@@ -44,8 +44,8 @@ def serialize_config(
         f.write(config.json())
 
 
-def construct_standard_dash_url(name: str, route: str) -> str:
-    url = Path(DASH_MOUNT_ROUTE + route) / name
+def construct_standard_dash_url(name: str, resource_type: ResourceType) -> str:
+    url = Path(DASH_MOUNT_ROUTE) / resource_type.name / name
     url = urllib.parse.quote(str(url))
 
     return url

@@ -1,3 +1,4 @@
+import shutil
 from http import HTTPStatus
 
 import config
@@ -16,7 +17,6 @@ from app.config import get_settings
 from app.constant import (
     STANDARD_DATA_FILENAME,
     STANDARD_STYLE_CONFIG,
-    TABLES_ROUTE,
     ResourceType,
 )
 from app.data_manager import register_table_path
@@ -77,7 +77,7 @@ async def upload(
     )
 
     table_snippet_url = construct_standard_dash_url(
-        name=table_name, route=TABLES_ROUTE
+        name=table_name, resource_type=ResourceType.table
     )
 
     table_default_style = create_default_table_style_config()
@@ -98,7 +98,9 @@ async def upload(
     )
 
 
-@router.get("/tables", response_model=ListingResponse)
+@router.get(
+    "/tables", response_model=ListingResponse, summary="Get table listing"
+)
 async def get_tables():
     tables = []
 
@@ -108,7 +110,9 @@ async def get_tables():
     return ListingResponse(data=tables)
 
 
-@router.get("/charts", response_model=ListingResponse)
+@router.get(
+    "/charts", response_model=ListingResponse, summary="Get chart listing"
+)
 async def get_charts():
     charts = []
 
@@ -118,8 +122,43 @@ async def get_charts():
     return ListingResponse(data=charts)
 
 
+@router.delete(
+    "/{resource}/{name}",
+    response_model=GeneralSuccessResponse,
+    summary="Delete resources",
+)
+async def delete_resources(
+    resource: ResourceType = Path(..., example="chart"),
+    name: str = Path(..., example="provinces_residents"),
+):
+
+    resource_path = validate_resource_existence(name=name, resource=resource)
+
+    if resource == ResourceType.chart:
+        url = construct_standard_dash_url(
+            name=name, resource_type=ResourceType.chart
+        )
+        config.charts.pop(url, None)
+    elif resource == ResourceType.table:
+        url = construct_standard_dash_url(
+            name=name, resource_type=ResourceType.table
+        )
+        config.table_snippets.pop(url, None)
+    else:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail=f"resource `{resource} {name}` not found",
+        )
+
+    shutil.rmtree(resource_path)
+
+    return GeneralSuccessResponse(data=SuccessMessage())
+
+
 @router.post(
-    "/{resource}/{name}/style-config", response_model=GeneralSuccessResponse
+    "/{resource}/{name}/style-config",
+    response_model=GeneralSuccessResponse,
+    summary="Update chart HTML div styling",
 )
 async def update_style_config(
     resource: ResourceType = Path(..., example="chart"),
@@ -145,7 +184,11 @@ async def update_style_config(
     return GeneralSuccessResponse(data=SuccessMessage())
 
 
-@router.get("/{resource}/{name}/style-config", response_model=ChartStyle)
+@router.get(
+    "/{resource}/{name}/style-config",
+    response_model=ChartStyle,
+    summary="Get current chart HTML div styling",
+)
 async def get_style_config(
     resource: ResourceType = Path(..., example="chart"),
     name: str = Path(..., example="provinces_residents"),

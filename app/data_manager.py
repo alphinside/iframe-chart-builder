@@ -7,10 +7,9 @@ from fastapi import HTTPException
 
 from app.config import get_settings
 from app.constant import (
-    CHARTS_ROUTE,
     STANDARD_CHARTS_CONFIG,
     STANDARD_DATA_FILENAME,
-    TABLES_ROUTE,
+    ResourceType,
 )
 from app.schema.params import AppliedFilters
 from app.utils import construct_standard_dash_url, read_data
@@ -94,7 +93,7 @@ def populate_persisted_tables():
 
         if data_path.exists():
             table_snippet_url = construct_standard_dash_url(
-                name=table_name, route=TABLES_ROUTE
+                name=table_name, resource_type=ResourceType.table
             )
             register_table_path(
                 table_name=table_name, table_snippet_url=table_snippet_url
@@ -108,6 +107,6 @@ def populate_persisted_charts():
 
         if data_path.exists():
             chart_url = construct_standard_dash_url(
-                name=chart_name, route=CHARTS_ROUTE
+                name=chart_name, resource_type=ResourceType.chart
             )
             register_chart_path(chart_name=chart_name, chart_url=chart_url)
