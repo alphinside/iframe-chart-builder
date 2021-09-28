@@ -108,6 +108,16 @@ async def get_tables():
     return ListingResponse(data=tables)
 
 
+@router.get("/charts", response_model=ListingResponse)
+async def get_charts():
+    charts = []
+
+    for url, name in config.charts.items():
+        charts.append(Listing(name=name, url=url))
+
+    return ListingResponse(data=charts)
+
+
 @router.post(
     "/{resource}/{name}/style-config", response_model=GeneralSuccessResponse
 )
