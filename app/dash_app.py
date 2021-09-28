@@ -18,7 +18,11 @@ from app.constant import (
     SELECT_ALL_VALUE,
     TABLES_ROUTE,
 )
-from app.schema.params import AppliedFilters, CategoricalFilterState
+from app.schema.params import (
+    AppliedFilters,
+    CategoricalFilterState,
+    MinMaxNumericalFilterState,
+)
 from app.services.dash_layout.chart import create_chart_content, update_chart
 from app.services.dash_layout.table import create_table_snippet
 
@@ -121,12 +125,7 @@ def display_initial_page(pathname):
             {"type": COLUMN_FILTER_NUM_MAX, "index": ALL}, "max"
         ),
         "cat_id": State({"type": COLUMN_FILTER_CAT, "index": ALL}, "id"),
-        "num_id_min": State(
-            {"type": COLUMN_FILTER_NUM_MIN, "index": ALL}, "id"
-        ),
-        "num_id_max": State(
-            {"type": COLUMN_FILTER_NUM_MAX, "index": ALL}, "id"
-        ),
+        "num_id": State({"type": COLUMN_FILTER_NUM_MIN, "index": ALL}, "id"),
         "pathname": State("url", "pathname"),
         "current_fig": State("chart", "figure"),
     },
@@ -139,8 +138,7 @@ def update_chart_based_on_filter(
     num_column_min,
     num_column_max,
     cat_id,
-    num_id_min,
-    num_id_max,
+    num_id,
     pathname,
     current_fig,
 ):
@@ -157,8 +155,7 @@ def update_chart_based_on_filter(
         num_column_min,
         num_column_max,
         cat_id,
-        num_id_min,
-        num_id_max,
+        num_id,
     )
 
     try:
@@ -182,16 +179,35 @@ def _build_filters(
     num_column_min,
     num_column_max,
     cat_id,
-    num_id_min,
-    num_id_max,
+    num_id,
 ) -> AppliedFilters:
     cat_filters = []
+    num_filters = []
 
     for values, options, column in zip(cat_values, cat_options, cat_id):
         if values is None or len(values) == 0 or len(values) == len(options):
             continue
 
-        filter = CategoricalFilterState(column=column["index"], values=values)
-        cat_filters.append(filter)
+        column_filter = CategoricalFilterState(
+            column=column["index"], values=values
+        )
+        cat_filters.append(column_filter)
 
-    return AppliedFilters(categorical=cat_filters)
+    for values_min, values_max, column_min, column_max, column in zip(
+        num_values_min, num_values_max, num_column_min, num_column_max, num_id
+    ):
+        if (values_min is None or values_min < column_min) and (
+            values_max is None or values_max > column_max
+        ):
+            continue
+
+        column_filter = MinMaxNumericalFilterState(
+            column=column["index"],
+            column_min=column_min,
+            column_max=column_max,
+            values_min=values_min,
+            values_max=values_max,
+        )
+        num_filters.append(column_filter)
+
+    return AppliedFilters(categorical=cat_filters, numerical=num_filters)

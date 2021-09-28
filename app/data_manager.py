@@ -46,8 +46,25 @@ def get_data(table_name: str, rewrite: bool = False) -> pd.DataFrame:
 def apply_filter(
     df: pd.DataFrame, applied_filters: AppliedFilters
 ) -> pd.DataFrame:
-    for filter in applied_filters.categorical:
-        df = df.query(f"{filter.column} == {filter.values}")
+    for column_filter in applied_filters.categorical:
+        df = df.query(f"{column_filter.column} == {column_filter.values}")
+
+    for column_filter in applied_filters.numerical:
+        if (
+            column_filter.values_min is not None
+            and column_filter.values_min >= column_filter.column_min
+        ):
+            df = df.query(
+                f"{column_filter.column} >= {column_filter.values_min}"
+            )
+
+        if (
+            column_filter.values_max is not None
+            and column_filter.values_max <= column_filter.column_max
+        ):
+            df = df.query(
+                f"{column_filter.column} <= {column_filter.values_max}"
+            )
 
     return df
 

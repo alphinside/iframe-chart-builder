@@ -27,15 +27,15 @@ class ChartBuilderInterface(ABC):
         columns_not_found = []
         columns_invalid_type = []
 
-        for filter in filters:
-            if filter.column not in df.columns:
-                columns_not_found.append(filter.column)
+        for column_filter in filters:
+            if column_filter.column not in df.columns:
+                columns_not_found.append(column_filter.column)
 
-            if filter.type == DataTypes.numerical:
-                if filter.column not in columns_not_found:
-                    if not is_numeric_dtype(df[filter.column]):
+            if column_filter.type == DataTypes.numerical:
+                if column_filter.column not in columns_not_found:
+                    if not is_numeric_dtype(df[column_filter.column]):
                         columns_invalid_type.append(
-                            (filter.column, filter.type.name)
+                            (column_filter.column, column_filter.type.name)
                         )
 
         if len(columns_not_found) != 0 or len(columns_invalid_type) != 0:

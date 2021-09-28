@@ -20,12 +20,16 @@ def create_filters_control(
 ):
     created_filters = []
 
-    for filter in filters:
-        if filter.type == DataTypes.categorical:
-            cat_filter = create_categorical_filter(df=df, filter=filter)
+    for column_filter in filters:
+        if column_filter.type == DataTypes.categorical:
+            cat_filter = create_categorical_filter(
+                df=df, column_filter=column_filter
+            )
             created_filters.append(cat_filter)
-        elif filter.type == DataTypes.numerical:
-            num_filter = create_numerical_filter(df=df, filter=filter)
+        elif column_filter.type == DataTypes.numerical:
+            num_filter = create_numerical_filter(
+                df=df, column_filter=column_filter
+            )
             created_filters.append(num_filter)
         else:
             raise Exception("Unknown filter creation error")
@@ -33,18 +37,22 @@ def create_filters_control(
     return html.Div(created_filters, style=style)
 
 
-def create_categorical_filter(df: pd.DataFrame, filter: ColumnFilter):
+def create_categorical_filter(df: pd.DataFrame, column_filter: ColumnFilter):
     categorical_selection = [
-        {"label": k, "value": k} for k in sorted(df[filter.column].unique())
+        {"label": k, "value": k}
+        for k in sorted(df[column_filter.column].unique())
     ]
 
     dropdown = html.Div(
         [
-            dcc.Markdown(f"**{filter.column.title()}**"),
+            dcc.Markdown(f"**{column_filter.column.title()}**"),
             html.Div(
                 [
                     dcc.Dropdown(
-                        id={"index": filter.column, "type": COLUMN_FILTER_CAT},
+                        id={
+                            "index": column_filter.column,
+                            "type": COLUMN_FILTER_CAT,
+                        },
                         multi=True,
                         options=categorical_selection,
                         searchable=True,
@@ -55,7 +63,7 @@ def create_categorical_filter(df: pd.DataFrame, filter: ColumnFilter):
                 [
                     dcc.Checklist(
                         id={
-                            "index": filter.column,
+                            "index": column_filter.column,
                             "type": COLUMN_FILTER_SELECT_ALL,
                         },
                         options=[
@@ -70,14 +78,17 @@ def create_categorical_filter(df: pd.DataFrame, filter: ColumnFilter):
     return dropdown
 
 
-def create_numerical_filter(df: pd.DataFrame, filter: ColumnFilter):
-    min_val, max_val = df[filter.column].min(), df[filter.column].max()
+def create_numerical_filter(df: pd.DataFrame, column_filter: ColumnFilter):
+    min_val, max_val = (
+        df[column_filter.column].min(),
+        df[column_filter.column].max(),
+    )
     formatted_min = "{:0,.2f}".format(min_val)
     formatted_max = "{:0,.2f}".format(max_val)
 
     input_fields = html.Div(
         [
-            dcc.Markdown(f"**{filter.column.title()}**"),
+            dcc.Markdown(f"**{column_filter.column.title()}**"),
             html.Div(
                 [
                     html.Div(
@@ -85,7 +96,7 @@ def create_numerical_filter(df: pd.DataFrame, filter: ColumnFilter):
                             dcc.Markdown(f"*minimum : {formatted_min}*"),
                             dcc.Input(
                                 id={
-                                    "index": filter.column,
+                                    "index": column_filter.column,
                                     "type": COLUMN_FILTER_NUM_MIN,
                                 },
                                 placeholder="Enter filter min value...",
@@ -93,6 +104,7 @@ def create_numerical_filter(df: pd.DataFrame, filter: ColumnFilter):
                                 min=min_val,
                                 max=max_val,
                                 value=None,
+                                debounce=True,
                                 style={
                                     "margin-right": "1vh",
                                     "margin-bottom": "1vh",
@@ -105,7 +117,7 @@ def create_numerical_filter(df: pd.DataFrame, filter: ColumnFilter):
                             dcc.Markdown(f"*maximum : {formatted_max}*"),
                             dcc.Input(
                                 id={
-                                    "index": filter.column,
+                                    "index": column_filter.column,
                                     "type": COLUMN_FILTER_NUM_MAX,
                                 },
                                 placeholder="Enter filter max value...",
@@ -113,6 +125,7 @@ def create_numerical_filter(df: pd.DataFrame, filter: ColumnFilter):
                                 min=min_val,
                                 max=max_val,
                                 value=None,
+                                debounce=True,
                                 style={
                                     "margin-right": "1vh",
                                     "margin-bottom": "1vh",

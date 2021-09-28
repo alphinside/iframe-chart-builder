@@ -13,8 +13,10 @@ class ColumnFilter(BaseModel):
 
 class MinMaxNumericalFilterState(BaseModel):
     column: str
-    min: Union[int, float, None] = None
-    max: Union[int, float, None] = None
+    column_min: Union[int, float]
+    column_max: Union[int, float]
+    values_min: Union[int, float, None] = None
+    values_max: Union[int, float, None] = None
 
 
 class CategoricalFilterState(BaseModel):
