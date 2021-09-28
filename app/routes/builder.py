@@ -2,7 +2,7 @@ from typing import Type
 
 from fastapi import APIRouter
 
-from app.constant import CHARTS_ROUTE
+from app.constant import ResourceType
 from app.data_manager import register_chart_path
 from app.schema.requests import (
     BarChartBuilderRequest,
@@ -24,7 +24,7 @@ def register_chart_config(request: Type[BaseChartBuilderRequest]):
     service.dump_config(request)
 
     chart_url = construct_standard_dash_url(
-        name=request.chart_name, route=CHARTS_ROUTE
+        name=request.chart_name, resource_type=ResourceType.chart
     )
 
     register_chart_path(chart_name=request.chart_name, chart_url=chart_url)
@@ -35,7 +35,7 @@ def register_chart_config(request: Type[BaseChartBuilderRequest]):
 @router.post(
     "/chart/bar",
     response_model=ChartBuilderResponse,
-    summary="Create new bar chart iframe",
+    summary="Create new bar chart",
     name="create_new_bar_chart",
 )
 async def register_new_bar_chart(request: BarChartBuilderRequest):
@@ -51,7 +51,7 @@ async def register_new_bar_chart(request: BarChartBuilderRequest):
 @router.post(
     "/chart/choropleth_map",
     response_model=ChartBuilderResponse,
-    summary="Create new choropleth map chart iframe",
+    summary="Create new choropleth map chart",
     name="create_new_choropleth_map_chart",
 )
 async def register_new_choropleth_map(request: ChoroplethMapBuilderRequest):
