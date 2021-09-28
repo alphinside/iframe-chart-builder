@@ -49,7 +49,8 @@ def create_chart_content(
     filters_control = create_filters_control(
         df=df,
         filters=config_model.chart_params.filters,
-        style=style.filters_parent,
+        group_style=style.filters_group,
+        entity_style=style.filters_entity,
     )
 
     """

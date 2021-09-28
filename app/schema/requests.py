@@ -14,9 +14,10 @@ StyleDict = Dict[str, Any]
 
 
 class ChartStyle(BaseModel):
-    figure: Optional[StyleDict] = None
-    filters_parent: Optional[StyleDict] = None
-    table: Optional[StyleDict] = None
+    figure: Optional[StyleDict] = {}
+    filters_group: Optional[StyleDict] = {}
+    filters_entity: Optional[StyleDict] = {}
+    table: Optional[StyleDict] = {}
 
 
 class BaseChartBuilderRequest(BaseModel):
