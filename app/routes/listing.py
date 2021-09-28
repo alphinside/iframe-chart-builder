@@ -1,5 +1,6 @@
 from http import HTTPStatus
 
+import config
 import pandas as pd
 from fastapi import (
     APIRouter,
@@ -21,7 +22,9 @@ from app.constant import (
 from app.data_manager import register_table_path
 from app.schema.requests import ChartStyle
 from app.schema.response import (
-    GeneralSuccessMessage,
+    GeneralSuccessResponse,
+    Listing,
+    ListingResponse,
     SuccessMessage,
     UploadSuccessData,
     UploadSuccessResponse,
@@ -95,8 +98,18 @@ async def upload(
     )
 
 
+@router.get("/tables", response_model=ListingResponse)
+async def get_tables():
+    tables = []
+
+    for url, name in config.table_snippets.items():
+        tables.append(Listing(name=name, url=url))
+
+    return ListingResponse(data=tables)
+
+
 @router.post(
-    "/{resource}/{name}/style-config", response_model=GeneralSuccessMessage
+    "/{resource}/{name}/style-config", response_model=GeneralSuccessResponse
 )
 async def update_style_config(
     resource: ResourceType = Path(..., example="chart"),
@@ -119,7 +132,7 @@ async def update_style_config(
         config=style, output_dir=resource_path, filename=STANDARD_STYLE_CONFIG
     )
 
-    return GeneralSuccessMessage(data=SuccessMessage())
+    return GeneralSuccessResponse(data=SuccessMessage())
 
 
 @router.get("/{resource}/{name}/style-config", response_model=ChartStyle)
