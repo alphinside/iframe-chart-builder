@@ -5,6 +5,8 @@ from dash import dcc, html
 
 from app.constant import (
     COLUMN_FILTER_CAT,
+    COLUMN_FILTER_NUM_MAX,
+    COLUMN_FILTER_NUM_MIN,
     COLUMN_FILTER_SELECT_ALL,
     SELECT_ALL_VALUE,
     DataTypes,
@@ -23,7 +25,8 @@ def create_filters_control(
             cat_filter = create_categorical_filter(df=df, filter=filter)
             created_filters.append(cat_filter)
         elif filter.type == DataTypes.numerical:
-            created_filters.append(html.Div())
+            num_filter = create_numerical_filter(df=df, filter=filter)
+            created_filters.append(num_filter)
         else:
             raise Exception("Unknown filter creation error")
 
@@ -65,3 +68,62 @@ def create_categorical_filter(df: pd.DataFrame, filter: ColumnFilter):
     )
 
     return dropdown
+
+
+def create_numerical_filter(df: pd.DataFrame, filter: ColumnFilter):
+    min_val, max_val = df[filter.column].min(), df[filter.column].max()
+    formatted_min = "{:0,.2f}".format(min_val)
+    formatted_max = "{:0,.2f}".format(max_val)
+
+    input_fields = html.Div(
+        [
+            dcc.Markdown(f"**{filter.column.title()}**"),
+            html.Div(
+                [
+                    html.Div(
+                        [
+                            dcc.Markdown(f"*minimum : {formatted_min}*"),
+                            dcc.Input(
+                                id={
+                                    "index": filter.column,
+                                    "type": COLUMN_FILTER_NUM_MIN,
+                                },
+                                placeholder="Enter filter min value...",
+                                type="number",
+                                min=min_val,
+                                max=max_val,
+                                value=None,
+                                style={
+                                    "margin-right": "1vh",
+                                    "margin-bottom": "1vh",
+                                },
+                            ),
+                        ],
+                    ),
+                    html.Div(
+                        [
+                            dcc.Markdown(f"*maximum : {formatted_max}*"),
+                            dcc.Input(
+                                id={
+                                    "index": filter.column,
+                                    "type": COLUMN_FILTER_NUM_MAX,
+                                },
+                                placeholder="Enter filter max value...",
+                                type="number",
+                                min=min_val,
+                                max=max_val,
+                                value=None,
+                                style={
+                                    "margin-right": "1vh",
+                                    "margin-bottom": "1vh",
+                                },
+                            ),
+                        ],
+                    ),
+                ],
+                style={"display": "flex"},
+            ),
+        ]
+    )
+
+    return input_fields

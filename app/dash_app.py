@@ -10,7 +10,8 @@ from flask import Response
 from app.constant import (
     CHARTS_ROUTE,
     COLUMN_FILTER_CAT,
-    COLUMN_FILTER_NUM,
+    COLUMN_FILTER_NUM_MAX,
+    COLUMN_FILTER_NUM_MIN,
     COLUMN_FILTER_SELECT_ALL,
     DASH_MOUNT_ROUTE,
     DASH_ROOT_ROUTE,
@@ -104,28 +105,42 @@ def display_initial_page(pathname):
         "cat_values": Input(
             {"type": COLUMN_FILTER_CAT, "index": ALL}, "value"
         ),
-        "num_values": Input(
-            {"type": COLUMN_FILTER_NUM, "index": ALL}, "value"
+        "num_values_min": Input(
+            {"type": COLUMN_FILTER_NUM_MIN, "index": ALL}, "value"
+        ),
+        "num_values_max": Input(
+            {"type": COLUMN_FILTER_NUM_MAX, "index": ALL}, "value"
         ),
         "cat_options": State(
             {"type": COLUMN_FILTER_CAT, "index": ALL}, "options"
         ),
-        "cat_id": State({"type": COLUMN_FILTER_CAT, "index": ALL}, "id"),
-        "num_options": State(
-            {"type": COLUMN_FILTER_NUM, "index": ALL}, "options"
+        "num_column_min": State(
+            {"type": COLUMN_FILTER_NUM_MIN, "index": ALL}, "min"
         ),
-        "num_id": State({"type": COLUMN_FILTER_NUM, "index": ALL}, "id"),
+        "num_column_max": State(
+            {"type": COLUMN_FILTER_NUM_MAX, "index": ALL}, "max"
+        ),
+        "cat_id": State({"type": COLUMN_FILTER_CAT, "index": ALL}, "id"),
+        "num_id_min": State(
+            {"type": COLUMN_FILTER_NUM_MIN, "index": ALL}, "id"
+        ),
+        "num_id_max": State(
+            {"type": COLUMN_FILTER_NUM_MAX, "index": ALL}, "id"
+        ),
         "pathname": State("url", "pathname"),
         "current_fig": State("chart", "figure"),
     },
 )
 def update_chart_based_on_filter(
     cat_values,
-    num_values,
+    num_values_min,
+    num_values_max,
     cat_options,
-    num_options,
+    num_column_min,
+    num_column_max,
     cat_id,
-    num_id,
+    num_id_min,
+    num_id_max,
     pathname,
     current_fig,
 ):
@@ -135,7 +150,15 @@ def update_chart_based_on_filter(
         return current_fig
 
     applied_filters = _build_filters(
-        cat_values, num_values, cat_options, num_options, cat_id, num_id
+        cat_values,
+        num_values_min,
+        num_values_max,
+        cat_options,
+        num_column_min,
+        num_column_max,
+        cat_id,
+        num_id_min,
+        num_id_max,
     )
 
     try:
@@ -152,7 +175,15 @@ def update_chart_based_on_filter(
 
 # TODO handle numerical
 def _build_filters(
-    cat_values, num_values, cat_options, num_options, cat_id, num_id
+    cat_values,
+    num_values_min,
+    num_values_max,
+    cat_options,
+    num_column_min,
+    num_column_max,
+    cat_id,
+    num_id_min,
+    num_id_max,
 ) -> AppliedFilters:
     cat_filters = []
 
