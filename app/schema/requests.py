@@ -3,11 +3,16 @@ from typing import Any, Dict, Optional
 from pydantic import BaseModel, Field
 
 from app.constant import ChartTypes
-from app.schema.params import BarChartParams, ChoroplethMapParams
+from app.schema.params import (
+    BarChartParams,
+    BubbleMapParams,
+    ChoroplethMapParams,
+)
 
 TYPE_PARAMS_MAP = {
     ChartTypes.bar: BarChartParams,
     ChartTypes.choropleth_map: ChoroplethMapParams,
+    ChartTypes.bubble_map: BubbleMapParams,
 }
 
 StyleDict = Dict[str, Any]
@@ -34,7 +39,7 @@ class BarChartBuilderRequest(BaseChartBuilderRequest):
     class Config:
         schema_extra = {
             "example": {
-                "table_name": "example_bar_chart_long",
+                "table_name": "example_bar_long",
                 "chart_name": "example_bar_long",
                 "chart_params": {
                     "title": "Medal Winnings",
@@ -58,11 +63,35 @@ class ChoroplethMapBuilderRequest(BaseChartBuilderRequest):
         schema_extra = {
             "example": {
                 "table_name": "example_choropleth_map",
-                "chart_name": "provinces_residents",
+                "chart_name": "example_choropleth_map",
                 "chart_params": {
                     "title": "Indonesia Population",
-                    "column_for_province": "state",
+                    "column_for_location": "state",
                     "column_for_color": "residents",
+                    "filters": [
+                        {"column": "state", "type": "categorical"},
+                        {"column": "residents", "type": "numerical"},
+                    ],
+                },
+            }
+        }
+
+
+class BubbleMapBuilderRequest(BaseChartBuilderRequest):
+    chart_params: BubbleMapParams
+    chart_type: ChartTypes = Field(ChartTypes.bubble_map, const=True)
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "table_name": "example_bubble_map",
+                "chart_name": "example_bubble_map",
+                "chart_params": {
+                    "title": "Indonesia Population",
+                    "column_for_latitude": "latitude",
+                    "column_for_longitude": "longitude",
+                    "column_for_color": "state",
+                    "column_for_size": "residents",
                     "filters": [
                         {"column": "state", "type": "categorical"},
                         {"column": "residents", "type": "numerical"},

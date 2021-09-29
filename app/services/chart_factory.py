@@ -16,6 +16,7 @@ from app.schema.params import AppliedFilters, BaseChartParams
 from app.schema.requests import BaseChartBuilderRequest
 from app.services.chart_builder import ChartBuilderInterface
 from app.services.chart_builder.bar import BarChartBuilder
+from app.services.chart_builder.bubble_map import BubbleMapBuilder
 from app.services.chart_builder.choropleth_map import ChoroplethMapBuilder
 from app.services.dash_layout.chart import create_default_chart_style
 from app.utils import serialize_config
@@ -86,6 +87,7 @@ class ChartBuilderService:
 factory = ChartBuilderFactory()
 factory.register_type(ChartTypes.bar, BarChartBuilder)
 factory.register_type(ChartTypes.choropleth_map, ChoroplethMapBuilder)
+factory.register_type(ChartTypes.bubble_map, BubbleMapBuilder)
 
 
 def create_chart(
@@ -93,9 +95,6 @@ def create_chart(
     config_model: BaseChartBuilderRequest,
     applied_filters: Optional[AppliedFilters] = None,
 ):
-    # config_model = check_validate_chart_config(chart_name)
-    # df = get_data(config_model.table_name)
-    # fig = create_chart(df=df, config_model=config_model)
 
     if applied_filters is not None:
         df = apply_filter(df=df, applied_filters=applied_filters)
