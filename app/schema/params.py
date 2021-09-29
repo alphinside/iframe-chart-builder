@@ -4,7 +4,7 @@ from typing import Any, List, Optional, Union
 from pydantic import BaseModel, validator
 from pydantic.class_validators import root_validator
 
-from app.constant import MAX_NUMBER_FILTERS, DataTypes
+from app.constant import MAX_NUMBER_FILTERS, DataTypes, PlotlyColorGroup
 
 
 class ColumnFilter(BaseModel):
@@ -30,9 +30,59 @@ class AppliedFilters(BaseModel):
     numerical: List[MinMaxNumericalFilterState] = []
 
 
+class BuiltInColors(BaseModel):
+    group: PlotlyColorGroup
+    color_name: str
+
+    @root_validator
+    def check_if_color_exist_in_group(cls, values):
+        group = values["group"]
+        color_name = values["color_name"]
+
+        if not hasattr(eval(f"px.colors.{group}"), color_name.title()):
+            raise ValueError(
+                f"built in color `{color_name}` not found "
+                f"in color group `{group}`"
+            )
+
+        return values
+
+
+class ColorOptions(BaseModel):
+    discrete: Optional[Union[BuiltInColors, List[str]]] = None
+    continuous: Optional[Union[BuiltInColors, List[str]]] = None
+
+    @validator("discrete")
+    def validate_discrete_color_category(cls, v):
+        if isinstance(v, BuiltInColors):
+            group = v.group
+            color_name = v.color_name
+
+            v = getattr(eval(f"px.colors.{group}"), color_name.title())
+
+        return v
+
+    @validator("continuous")
+    def validate_continuous_color_category(cls, v):
+        if isinstance(v, BuiltInColors):
+            if v.group == PlotlyColorGroup.qualitative:
+                raise ValueError(
+                    "qualitative color group cannot be used "
+                    "for continuous color type"
+                )
+
+            group = v.group
+            color_name = v.color_name
+
+            v = getattr(eval(f"px.colors.{group}"), color_name.title())
+
+        return v
+
+
 class BaseChartParams(BaseModel):
     title: Optional[str] = None
     filters: List[ColumnFilter] = []
+    color_opt: Optional[ColorOptions] = None
 
     @validator("filters")
     def validate_and_limit_filters(cls, v):

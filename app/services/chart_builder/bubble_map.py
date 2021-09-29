@@ -47,7 +47,8 @@ class BubbleMapBuilder(ChartBuilderInterface):
             center={"lat": -4.050027, "lon": 116.375442},
             size=chart_params.column_for_size,
             zoom=chart_params.zoom_level,
-            color_continuous_scale=px.colors.sequential.Plasma_r,
+            color_discrete_sequence=chart_params.color_opt.discrete,
+            color_continuous_scale=chart_params.color_opt.continuous,
             title=chart_params.title,
             mapbox_style="open-street-map",
         )

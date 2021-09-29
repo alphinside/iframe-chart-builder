@@ -45,3 +45,10 @@ class DataTypes(str, BaseEnum):
 class ResourceType(str, BaseEnum):
     chart = "chart"
     table = "table"
+
+
+class PlotlyColorGroup(str, BaseEnum):
+    qualitative = "qualitative"
+    sequential = "sequential"
+    diverging = "diverging"
+    cyclical = "cyclical"
