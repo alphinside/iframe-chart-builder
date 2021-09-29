@@ -1,5 +1,6 @@
 from http import HTTPStatus
 from pathlib import Path
+from typing import Tuple
 
 import config
 import pandas as pd
@@ -12,7 +13,12 @@ from app.constant import (
     ResourceType,
 )
 from app.schema.params import AppliedFilters
-from app.utils import construct_standard_dash_url, read_data
+from app.schema.requests import BaseChartBuilderRequest
+from app.utils import (
+    check_validate_chart_config,
+    construct_standard_dash_url,
+    read_data,
+)
 
 config.table_dfs = {}
 config.table_snippets = {}
@@ -110,3 +116,12 @@ def populate_persisted_charts():
                 name=chart_name, resource_type=ResourceType.chart
             )
             register_chart_path(chart_name=chart_name, chart_url=chart_url)
+
+
+def get_charts_meta(
+    chart_name: str,
+) -> Tuple[pd.DataFrame, BaseChartBuilderRequest]:
+    config_model = check_validate_chart_config(chart_name)
+    df = get_data(config_model.table_name)
+
+    return (df, config_model)

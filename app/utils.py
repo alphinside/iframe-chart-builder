@@ -51,7 +51,7 @@ def construct_standard_dash_url(name: str, resource_type: ResourceType) -> str:
     return url
 
 
-def check_validate_chart_config(chart_name: str):
+def check_validate_chart_config(chart_name: str) -> BaseChartBuilderRequest:
     chart_config_file_path = (
         get_settings().charts_output_dir / chart_name / STANDARD_CHARTS_CONFIG
     )
