@@ -130,7 +130,7 @@ async def get_charts():
 )
 async def delete_resources(
     resource: ResourceType = Path(..., example="chart"),
-    name: str = Path(..., example="provinces_residents"),
+    name: str = Path(..., example="example_choropleth_map"),
 ):
 
     resource_path = validate_resource_existence(name=name, resource=resource)
@@ -163,7 +163,7 @@ async def delete_resources(
 )
 async def update_style_config(
     resource: ResourceType = Path(..., example="chart"),
-    name: str = Path(..., example="provinces_residents"),
+    name: str = Path(..., example="example_choropleth_map"),
     style: ChartStyle = Body(
         ...,
         example=ChartStyle(
@@ -192,7 +192,7 @@ async def update_style_config(
 )
 async def get_style_config(
     resource: ResourceType = Path(..., example="chart"),
-    name: str = Path(..., example="provinces_residents"),
+    name: str = Path(..., example="example_choropleth_map"),
 ):
     resource_path = validate_resource_existence(name=name, resource=resource)
 
