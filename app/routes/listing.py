@@ -55,13 +55,14 @@ async def upload(
     data: UploadFile = File(...),
 ):
     data_standardized_name = STANDARD_DATA_FILENAME
-    output_dir = get_settings().tables_output_dir / table_name
-
-    validate_file_suffix(data.filename)
 
     table_name = table_name.strip()
     if table_name == "":
         table_name = data.filename.strip(".xlsx")
+
+    output_dir = get_settings().tables_output_dir / table_name
+
+    validate_file_suffix(data.filename)
 
     if error_if_exist and output_dir.exists():
         raise HTTPException(

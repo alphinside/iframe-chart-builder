@@ -17,8 +17,8 @@ class ChoroplethMapBuilder(ChartBuilderInterface):
     ):
         columns_not_found = []
 
-        if chart_params.column_for_province not in df.columns:
-            columns_not_found.append(chart_params.column_for_province)
+        if chart_params.column_for_location not in df.columns:
+            columns_not_found.append(chart_params.column_for_location)
 
         if chart_params.column_for_color not in df.columns:
             columns_not_found.append(chart_params.column_for_color)
@@ -39,12 +39,13 @@ class ChoroplethMapBuilder(ChartBuilderInterface):
             df,
             geojson=get_settings().indo_province_geojson,
             color=chart_params.column_for_color,
-            locations=chart_params.column_for_province,
+            locations=chart_params.column_for_location,
             featureidkey="properties.state",
             center={"lat": -4.050027, "lon": 116.375442},
             zoom=chart_params.zoom_level,
             mapbox_style="open-street-map",
             color_continuous_scale=px.colors.sequential.Plasma_r,
+            title=chart_params.title,
         )
 
         return fig

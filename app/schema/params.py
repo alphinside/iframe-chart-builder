@@ -2,6 +2,7 @@ from collections import Counter
 from typing import Any, List, Optional, Union
 
 from pydantic import BaseModel, validator
+from pydantic.class_validators import root_validator
 
 from app.constant import MAX_NUMBER_FILTERS, DataTypes
 
@@ -68,6 +69,24 @@ class BarChartParams(BaseChartParams):
 
 
 class ChoroplethMapParams(BaseChartParams):
-    column_for_province: str
+    column_for_location: str
     column_for_color: str
     zoom_level: int = 4
+
+
+class BubbleMapParams(BaseChartParams):
+    column_for_latitude: str
+    column_for_longitude: str
+    column_for_color: Optional[str] = None
+    column_for_size: Optional[str] = None
+    zoom_level: int = 4
+
+    @root_validator
+    def color_or_size_must_exist(cls, values):
+        if (
+            values["column_for_color"] is None
+            and values["column_for_size"] is None
+        ):
+            raise ValueError("column for size or color cannot both empty")
+
+        return values
