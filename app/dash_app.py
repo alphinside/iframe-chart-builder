@@ -18,12 +18,14 @@ from app.constant import (
     SELECT_ALL_VALUE,
     TABLES_ROUTE,
 )
+from app.data_manager import get_charts_meta
 from app.schema.params import (
     AppliedFilters,
     CategoricalFilterState,
     MinMaxNumericalFilterState,
 )
-from app.services.dash_layout.chart import create_chart_content, update_chart
+from app.services.chart_factory import create_chart
+from app.services.dash_layout.chart import create_chart_content
 from app.services.dash_layout.table import create_table_snippet
 
 dash_app = dash.Dash(__name__, requests_pathname_prefix=DASH_ROOT_ROUTE)
@@ -84,7 +86,14 @@ def display_initial_page(pathname):
     try:
         if pathname.startswith(DASH_MOUNT_ROUTE + CHARTS_ROUTE):
             if pathname in config.charts:
-                return create_chart_content(chart_name=config.charts[pathname])
+                df, config_model = get_charts_meta(config.charts[pathname])
+                fig = create_chart(df=df, config_model=config_model)
+                return create_chart_content(
+                    chart_name=config.charts[pathname],
+                    df=df,
+                    fig=fig,
+                    filters=config_model.chart_params.filters,
+                )
 
         if pathname.startswith(DASH_MOUNT_ROUTE + TABLES_ROUTE):
             if pathname in config.table_snippets:
@@ -159,8 +168,10 @@ def update_chart_based_on_filter(
     )
 
     try:
-        updated_fig = update_chart(
-            chart_name=config.charts[pathname],
+        df, config_model = get_charts_meta(config.charts[pathname])
+        updated_fig = create_chart(
+            df=df,
+            config_model=config_model,
             applied_filters=applied_filters,
         )
 

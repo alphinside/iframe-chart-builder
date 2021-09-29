@@ -1,54 +1,37 @@
-from typing import Optional, Type
+from typing import List
 
 import pandas as pd
 from dash import dcc, html
+from plotly.graph_objs._figure import Figure
 
 from app.constant import ResourceType
-from app.data_manager import apply_filter, get_data
-from app.schema.params import AppliedFilters
-from app.schema.requests import BaseChartBuilderRequest
-from app.services.chart_factory import ChartBuilderService
+from app.schema.params import ColumnFilter
+from app.schema.requests import ChartStyle
 from app.services.dash_layout.controls import create_filters_control
-from app.utils import check_validate_chart_config, check_validate_style_config
-
-
-def create_chart(
-    df: pd.DataFrame,
-    config_model: Type[BaseChartBuilderRequest],
-    applied_filters: Optional[AppliedFilters] = None,
-):
-    if applied_filters is not None:
-        df = apply_filter(df=df, applied_filters=applied_filters)
-
-    chart_builder = ChartBuilderService(config_model.chart_type)
-    fig = chart_builder.build(
-        df=df,
-        chart_params=config_model.chart_params,
-    )
-    fig.update_layout(
-        autosize=True,
-    )
-    fig.update_yaxes(automargin=True)
-
-    return fig
+from app.utils import check_validate_style_config
 
 
 def create_chart_content(
     chart_name: str,
+    df: pd.DataFrame,
+    fig: Figure,
+    filters: List[ColumnFilter],
 ):
-    config_model = check_validate_chart_config(chart_name)
-    df = get_data(config_model.table_name)
-    fig = create_chart(df=df, config_model=config_model)
 
     style = check_validate_style_config(
         name=chart_name, resource=ResourceType.chart
     )
 
+    fig.update_layout(
+        autosize=True,
+    )
+    fig.update_yaxes(automargin=True)
+
     graph = dcc.Graph(id="chart", figure=fig, style=style.figure)
 
     filters_control = create_filters_control(
         df=df,
-        filters=config_model.chart_params.filters,
+        filters=filters,
         group_style=style.filters_group,
         entity_style=style.filters_entity,
     )
@@ -64,11 +47,14 @@ def create_chart_content(
     return html.Div([graph, filters_control])
 
 
-def update_chart(chart_name: str, applied_filters: AppliedFilters):
-    config_model = check_validate_chart_config(chart_name)
-    df = get_data(config_model.table_name)
-    fig = create_chart(
-        df=df, config_model=config_model, applied_filters=applied_filters
+def create_default_chart_style():
+    return ChartStyle(
+        figure={"height": "50vh", "width": "100vh", "display": "inline-block"},
+        filters_group={
+            "height": "50vh",
+            "width": "20vh",
+            "display": "inline-block",
+            "vertical-align": "top",
+        },
+        filters_entity={},
     )
-
-    return fig
