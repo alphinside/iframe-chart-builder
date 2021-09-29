@@ -34,6 +34,7 @@ class BaseEnum(Enum, metaclass=MetaEnum):
 class ChartTypes(str, BaseEnum):
     bar = "bar"
     choropleth_map = "choropleth_map"
+    bubble_map = "bubble_map"
 
 
 class DataTypes(str, BaseEnum):

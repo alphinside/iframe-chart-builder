@@ -1,4 +1,3 @@
-import json
 from http import HTTPStatus
 
 import pandas as pd
@@ -6,12 +5,10 @@ import plotly.express as px
 from fastapi import HTTPException
 from plotly.graph_objs._figure import Figure
 
+from app.config import get_settings
 from app.errors import COLUMN_NOT_FOUND_ERROR
 from app.schema.params import ChoroplethMapParams
 from app.services.chart_builder import ChartBuilderInterface
-
-with open("app/data/indonesia-province.json", "r") as f:
-    indo_geojson = json.loads(f.read())
 
 
 class ChoroplethMapBuilder(ChartBuilderInterface):
@@ -40,7 +37,7 @@ class ChoroplethMapBuilder(ChartBuilderInterface):
 
         fig = px.choropleth_mapbox(
             df,
-            geojson=indo_geojson,
+            geojson=get_settings().indo_province_geojson,
             color=chart_params.column_for_color,
             locations=chart_params.column_for_province,
             featureidkey="properties.state",
