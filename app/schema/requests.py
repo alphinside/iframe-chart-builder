@@ -46,11 +46,11 @@ class BarChartBuilderRequest(BaseChartBuilderRequest):
                     "color_opt": {
                         "discrete": {
                             "group": "qualitative",
-                            "color_name": "prism",
+                            "color_name": "Prism",
                         },
                         "continuous": {
                             "group": "sequential",
-                            "color_name": "rainbow",
+                            "color_name": "Rainbow",
                         },
                     },
                     "column_for_x": "nation",
@@ -79,11 +79,11 @@ class ChoroplethMapBuilderRequest(BaseChartBuilderRequest):
                     "color_opt": {
                         "discrete": {
                             "group": "qualitative",
-                            "color_name": "prism",
+                            "color_name": "Prism",
                         },
                         "continuous": {
                             "group": "sequential",
-                            "color_name": "rainbow",
+                            "color_name": "Rainbow",
                         },
                     },
                     "column_for_location": "state",
@@ -111,11 +111,11 @@ class BubbleMapBuilderRequest(BaseChartBuilderRequest):
                     "color_opt": {
                         "discrete": {
                             "group": "qualitative",
-                            "color_name": "prism",
+                            "color_name": "Prism",
                         },
                         "continuous": {
                             "group": "sequential",
-                            "color_name": "rainbow",
+                            "color_name": "Rainbow",
                         },
                     },
                     "column_for_latitude": "latitude",

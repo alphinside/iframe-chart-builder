@@ -1,7 +1,9 @@
 from pathlib import PosixPath
 from typing import List, Union
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, create_model
+
+from app.constant import PlotlyColorGroup
 
 
 class UploadSuccessData(BaseModel):
@@ -37,3 +39,12 @@ class Listing(BaseModel):
 
 class ListingResponse(BaseModel):
     data: List[Listing]
+
+
+color_groups = {k.name: (List[str], ...) for k in PlotlyColorGroup}
+
+ColorGroupsModel = create_model("ColorGroupsModel", **color_groups)
+
+
+class ColorOptionsResponse(BaseModel):
+    data: ColorGroupsModel

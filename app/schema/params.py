@@ -39,7 +39,7 @@ class BuiltInColors(BaseModel):
         group = values["group"]
         color_name = values["color_name"]
 
-        if not hasattr(eval(f"px.colors.{group}"), color_name.title()):
+        if not hasattr(eval(f"px.colors.{group}"), color_name):
             raise ValueError(
                 f"built in color `{color_name}` not found "
                 f"in color group `{group}`"
@@ -58,7 +58,7 @@ class ColorOptions(BaseModel):
             group = v.group
             color_name = v.color_name
 
-            v = getattr(eval(f"px.colors.{group}"), color_name.title())
+            v = getattr(eval(f"px.colors.{group}"), color_name)
 
         return v
 
@@ -74,7 +74,7 @@ class ColorOptions(BaseModel):
             group = v.group
             color_name = v.color_name
 
-            v = getattr(eval(f"px.colors.{group}"), color_name.title())
+            v = getattr(eval(f"px.colors.{group}"), color_name)
 
         return v
 
