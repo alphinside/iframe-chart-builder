@@ -45,7 +45,7 @@ def serialize_config(
 
 
 def construct_standard_dash_url(name: str, resource_type: ResourceType) -> str:
-    url = Path(DASH_MOUNT_ROUTE) / resource_type.name / name
+    url = Path(DASH_MOUNT_ROUTE) / resource_type.value / name
     url = urllib.parse.quote(str(url))
 
     return url

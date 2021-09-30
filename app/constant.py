@@ -3,6 +3,7 @@ from pathlib import Path
 
 CHARTS_ROUTE = "/chart/"
 TABLES_ROUTE = "/table/"
+COLORS_ROUTE = "/color-group/"
 STANDARD_CHARTS_CONFIG = Path("charts_config.json")
 STANDARD_STYLE_CONFIG = Path("style_config.json")
 STANDARD_DATA_FILENAME = Path("data.gzip")
@@ -45,3 +46,14 @@ class DataTypes(str, BaseEnum):
 class ResourceType(str, BaseEnum):
     chart = "chart"
     table = "table"
+
+
+class ExtendedResourceType(str, BaseEnum):
+    color_group = "color-group"
+
+
+class PlotlyColorGroup(str, BaseEnum):
+    qualitative = "qualitative"
+    sequential = "sequential"
+    diverging = "diverging"
+    cyclical = "cyclical"

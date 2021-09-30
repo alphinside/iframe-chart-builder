@@ -50,7 +50,7 @@ async def register_new_bar_chart(request: BarChartBuilderRequest):
 
 
 @router.post(
-    "/chart/choropleth_map",
+    "/chart/choropleth-map",
     response_model=ChartBuilderResponse,
     summary="Create new choropleth map chart",
     name="create_new_choropleth_map_chart",
@@ -66,9 +66,9 @@ async def register_new_choropleth_map(request: ChoroplethMapBuilderRequest):
 
 
 @router.post(
-    "/chart/bubble_map",
+    "/chart/bubble-map",
     response_model=ChartBuilderResponse,
-    summary="Create new bubble map chart",
+    summary="Create new bubble / scatter map chart",
     name="create_new_bubble_map_chart",
 )
 async def register_new_bubble_map(request: BubbleMapBuilderRequest):

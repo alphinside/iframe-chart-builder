@@ -1,8 +1,10 @@
 import shutil
 from http import HTTPStatus
+from typing import List
 
 import config
 import pandas as pd
+import plotly.express as px
 from fastapi import (
     APIRouter,
     Body,
@@ -17,11 +19,16 @@ from app.config import get_settings
 from app.constant import (
     STANDARD_DATA_FILENAME,
     STANDARD_STYLE_CONFIG,
+    ExtendedResourceType,
+    PlotlyColorGroup,
     ResourceType,
 )
 from app.data_manager import register_table_path
 from app.schema.requests import ChartStyle
 from app.schema.response import (
+    ColorGroupResponse,
+    ColorGroupsModel,
+    ColorOptionsResponse,
     GeneralSuccessResponse,
     Listing,
     ListingResponse,
@@ -121,6 +128,33 @@ async def get_charts():
         charts.append(Listing(name=name, url=url))
 
     return ListingResponse(data=charts)
+
+
+@router.get(
+    "/color-options",
+    response_model=ColorOptionsResponse,
+    summary="Get all built-in color options",
+)
+async def get_built_in_color():
+    def _list_available_color_names(group: PlotlyColorGroup) -> List[str]:
+        color_group_object = getattr(px.colors, group)
+        available_colors = [
+            set(data.y).pop() for data in color_group_object.swatches().data
+        ]
+
+        return available_colors
+
+    built_in_colors = {
+        k.name: ColorGroupResponse(
+            snippet_url=construct_standard_dash_url(
+                name=k.name, resource_type=ExtendedResourceType.color_group
+            ),
+            colors_list=_list_available_color_names(k),
+        )
+        for k in PlotlyColorGroup
+    }
+
+    return ColorOptionsResponse(data=ColorGroupsModel(**built_in_colors))
 
 
 @router.delete(

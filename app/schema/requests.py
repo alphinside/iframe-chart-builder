@@ -43,6 +43,16 @@ class BarChartBuilderRequest(BaseChartBuilderRequest):
                 "chart_name": "example_bar_long",
                 "chart_params": {
                     "title": "Medal Winnings",
+                    "color_opt": {
+                        "discrete": {
+                            "group": "qualitative",
+                            "color_name": "Prism",
+                        },
+                        "continuous": {
+                            "group": "sequential",
+                            "color_name": "Rainbow",
+                        },
+                    },
                     "column_for_x": "nation",
                     "column_for_y": ["count"],
                     "column_for_color": "medal",
@@ -66,6 +76,16 @@ class ChoroplethMapBuilderRequest(BaseChartBuilderRequest):
                 "chart_name": "example_choropleth_map",
                 "chart_params": {
                     "title": "Indonesia Population",
+                    "color_opt": {
+                        "discrete": {
+                            "group": "qualitative",
+                            "color_name": "Prism",
+                        },
+                        "continuous": {
+                            "group": "sequential",
+                            "color_name": "Rainbow",
+                        },
+                    },
                     "column_for_location": "state",
                     "column_for_color": "residents",
                     "filters": [
@@ -88,12 +108,22 @@ class BubbleMapBuilderRequest(BaseChartBuilderRequest):
                 "chart_name": "example_bubble_map",
                 "chart_params": {
                     "title": "Indonesia Population",
+                    "color_opt": {
+                        "discrete": {
+                            "group": "qualitative",
+                            "color_name": "Prism",
+                        },
+                        "continuous": {
+                            "group": "sequential",
+                            "color_name": "Rainbow",
+                        },
+                    },
                     "column_for_latitude": "latitude",
                     "column_for_longitude": "longitude",
-                    "column_for_color": "state",
+                    "column_for_color": "name",
                     "column_for_size": "residents",
                     "filters": [
-                        {"column": "state", "type": "categorical"},
+                        {"column": "name", "type": "categorical"},
                         {"column": "residents", "type": "numerical"},
                     ],
                 },

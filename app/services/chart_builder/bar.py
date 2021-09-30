@@ -42,20 +42,18 @@ class BarChartBuilder(ChartBuilderInterface):
         self, chart_params: BarChartParams, df: pd.DataFrame
     ) -> Figure:
 
+        kwargs = {
+            "x": chart_params.column_for_x,
+            "y": chart_params.column_for_y,
+            "title": chart_params.title,
+            "color": chart_params.column_for_color,
+            "color_discrete_sequence": chart_params.color_opt.discrete,
+            "color_continuous_scale": chart_params.color_opt.continuous,
+        }
+
         if isinstance(chart_params.column_for_y, list):
-            fig = px.bar(
-                df,
-                x=chart_params.column_for_x,
-                y=chart_params.column_for_y,
-                title=chart_params.title,
-            )
-        else:
-            fig = px.bar(
-                df,
-                x=chart_params.column_for_x,
-                y=chart_params.column_for_y,
-                color=chart_params.column_for_color,
-                title=chart_params.title,
-            )
+            kwargs.pop("color")
+
+        fig = px.bar(df, **kwargs)
 
         return fig
