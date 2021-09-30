@@ -1,43 +1,12 @@
-from http import HTTPStatus
-
 import pandas as pd
 import plotly.express as px
-from fastapi import HTTPException
 from plotly.graph_objs._figure import Figure
 
-from app.errors import COLUMN_NOT_FOUND_ERROR
 from app.schema.params import BubbleMapParams
 from app.services.chart_builder import ChartBuilderInterface
 
 
 class BubbleMapBuilder(ChartBuilderInterface):
-    def validate_columns(
-        self, chart_params: BubbleMapParams, df: pd.DataFrame
-    ):
-        columns_not_found = []
-
-        if chart_params.column_for_latitude not in df.columns:
-            columns_not_found.append(chart_params.column_for_latitude)
-
-        if chart_params.column_for_longitude not in df.columns:
-            columns_not_found.append(chart_params.column_for_longitude)
-
-        if chart_params.column_for_color is not None:
-            if chart_params.column_for_color not in df.columns:
-                columns_not_found.append(chart_params.column_for_color)
-
-        if chart_params.column_for_size is not None:
-            if chart_params.column_for_size not in df.columns:
-                columns_not_found.append(chart_params.column_for_size)
-
-        if len(columns_not_found) != 0:
-            raise HTTPException(
-                status_code=HTTPStatus.BAD_REQUEST,
-                detail=COLUMN_NOT_FOUND_ERROR.format_map(
-                    {"column_names": columns_not_found}
-                ),
-            )
-
     def build_chart(
         self, chart_params: BubbleMapParams, df: pd.DataFrame
     ) -> Figure:
