@@ -46,6 +46,7 @@ class DataTypes(str, BaseEnum):
 class ResourceType(str, BaseEnum):
     chart = "chart"
     table = "table"
+    color_group = "color-group"
 
 
 class PlotlyColorGroup(str, BaseEnum):

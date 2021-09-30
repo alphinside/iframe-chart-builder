@@ -25,6 +25,7 @@ from app.constant import (
 from app.data_manager import register_table_path
 from app.schema.requests import ChartStyle
 from app.schema.response import (
+    ColorGroupResponse,
     ColorGroupsModel,
     ColorOptionsResponse,
     GeneralSuccessResponse,
@@ -143,7 +144,13 @@ async def get_built_in_color():
         return available_colors
 
     built_in_colors = {
-        k.name: _list_available_color_names(k) for k in PlotlyColorGroup
+        k.name: ColorGroupResponse(
+            snippet_url=construct_standard_dash_url(
+                name=k.name, resource_type=ResourceType.color_group
+            ),
+            colors_list=_list_available_color_names(k),
+        )
+        for k in PlotlyColorGroup
     }
 
     return ColorOptionsResponse(data=ColorGroupsModel(**built_in_colors))

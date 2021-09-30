@@ -41,7 +41,12 @@ class ListingResponse(BaseModel):
     data: List[Listing]
 
 
-color_groups = {k.name: (List[str], ...) for k in PlotlyColorGroup}
+class ColorGroupResponse(BaseModel):
+    snippet_url: str
+    colors_list: List[str]
+
+
+color_groups = {k.name: (ColorGroupResponse, ...) for k in PlotlyColorGroup}
 
 ColorGroupsModel = create_model("ColorGroupsModel", **color_groups)
 
