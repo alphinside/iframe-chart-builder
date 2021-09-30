@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from http import HTTPStatus
-from typing import List
+from typing import List, Type
 
 import pandas as pd
 from fastapi import HTTPException
@@ -8,14 +8,10 @@ from pandas.api.types import is_numeric_dtype
 
 from app.constant import DataTypes
 from app.errors import COLUMN_INVALID_TYPE_ERROR, COLUMN_NOT_FOUND_ERROR
-from app.schema.params import ColumnFilter
+from app.schema.params import BaseChartParams, ColumnFilter
 
 
 class ChartBuilderInterface(ABC):
-    @abstractmethod
-    def validate_columns(self):
-        pass
-
     @abstractmethod
     def build_chart(self):
         pass
@@ -57,4 +53,32 @@ class ChartBuilderInterface(ABC):
             raise HTTPException(
                 status_code=HTTPStatus.BAD_REQUEST,
                 detail=", ".join(err_messages),
+            )
+
+    def validate_columns(
+        self, chart_params: Type[BaseChartParams], df: pd.DataFrame
+    ):
+        columns_not_found = []
+
+        columns_attributes = [
+            param
+            for param in chart_params
+            if param[0].startswith("column_for")
+        ]
+
+        for _, values in columns_attributes:
+            if values is not None:
+                if isinstance(values, str):
+                    values = [values]
+
+                for value in values:
+                    if value not in df.columns:
+                        columns_not_found.append(value)
+
+        if len(columns_not_found) != 0:
+            raise HTTPException(
+                status_code=HTTPStatus.BAD_REQUEST,
+                detail=COLUMN_NOT_FOUND_ERROR.format_map(
+                    {"column_names": columns_not_found}
+                ),
             )

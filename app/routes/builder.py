@@ -7,6 +7,7 @@ from app.data_manager import register_chart_path
 from app.schema.requests import (
     BarChartBuilderRequest,
     BaseChartBuilderRequest,
+    BubbleChartBuilderRequest,
     BubbleMapBuilderRequest,
     ChoroplethMapBuilderRequest,
 )
@@ -72,6 +73,22 @@ async def register_new_choropleth_map(request: ChoroplethMapBuilderRequest):
     name="create_new_bubble_map_chart",
 )
 async def register_new_bubble_map(request: BubbleMapBuilderRequest):
+    chart_url = register_chart_config(request)
+
+    return ChartBuilderResponse(
+        data=ChartBuilderData(
+            chart_name=request.chart_name, chart_url=chart_url
+        )
+    )
+
+
+@router.post(
+    "/chart/bubble",
+    response_model=ChartBuilderResponse,
+    summary="Create new bubble / scatter chart",
+    name="create_new_bubble_chart",
+)
+async def register_new_bubble_chart(request: BubbleChartBuilderRequest):
     chart_url = register_chart_config(request)
 
     return ChartBuilderResponse(
