@@ -1,14 +1,18 @@
 import logging
 from http import HTTPStatus
+from pathlib import Path
+from urllib.parse import parse_qs
 
 import config
 import dash
+import plotly.express as px
 from dash import dcc, html
 from dash.dependencies import ALL, MATCH, Input, Output, State
 from flask import Response
 
 from app.constant import (
     CHARTS_ROUTE,
+    COLORS_ROUTE,
     COLUMN_FILTER_CAT,
     COLUMN_FILTER_NUM_MAX,
     COLUMN_FILTER_NUM_MIN,
@@ -17,12 +21,14 @@ from app.constant import (
     DASH_ROOT_ROUTE,
     SELECT_ALL_VALUE,
     TABLES_ROUTE,
+    PlotlyColorGroup,
 )
 from app.data_manager import get_charts_meta
 from app.schema.params import (
     AppliedFilters,
     CategoricalFilterState,
     MinMaxNumericalFilterState,
+    StyleQueryParam,
 )
 from app.services.chart_factory import create_chart
 from app.services.dash_layout.chart import create_chart_content
@@ -33,6 +39,65 @@ dash_app = dash.Dash(__name__, requests_pathname_prefix=DASH_ROOT_ROUTE)
 dash_app.layout = html.Div(
     [dcc.Location(id="url", refresh=False), html.Div(id="page-content")]
 )
+
+
+@dash_app.callback(
+    Output("page-content", "children"),
+    [Input("url", "pathname"), Input("url", "search")],
+)
+def display_initial_page(pathname: str, search: str):
+    query = parse_qs(search.strip("?"))
+    query = StyleQueryParam.parse_obj(query)
+
+    try:
+        if pathname.startswith(DASH_MOUNT_ROUTE + CHARTS_ROUTE):
+            if pathname in config.charts:
+                df, config_model = get_charts_meta(config.charts[pathname])
+                fig = create_chart(df=df, config_model=config_model)
+                return create_chart_content(
+                    chart_name=config.charts[pathname],
+                    df=df,
+                    fig=fig,
+                    filters=config_model.chart_params.filters,
+                )
+
+        if pathname.startswith(DASH_MOUNT_ROUTE + TABLES_ROUTE):
+            if pathname in config.table_snippets:
+                return create_table_snippet(
+                    table_name=config.table_snippets[pathname]
+                )
+
+        if pathname.startswith(DASH_MOUNT_ROUTE + COLORS_ROUTE):
+            color_group_name = Path(pathname).name
+            if color_group_name not in PlotlyColorGroup:
+                Response("404 Not Found", HTTPStatus.NOT_FOUND)
+                return [html.H1("404 Not Found")]
+
+            if color_group_name == PlotlyColorGroup.qualitative:
+                fig = getattr(px.colors, color_group_name).swatches()
+            else:
+                fig = getattr(
+                    px.colors, color_group_name
+                ).swatches_continuous()
+
+            fig.update_layout(
+                width=None,
+                height=None,
+                autosize=True,
+            )
+
+            # import pdb;pdb.set_trace()
+            return [dcc.Graph(figure=fig, style=query.dict(exclude_none=True))]
+
+        Response("404 Not Found", HTTPStatus.NOT_FOUND)
+        return [html.H1("404 Not Found")]
+
+    except Exception as e:
+        Response(
+            f"500 Internal Server Error : {e}",
+            HTTPStatus.INTERNAL_SERVER_ERROR,
+        )
+        return [html.H1(f"500 Internal Server Error : {e}")]
 
 
 @dash_app.callback(
@@ -76,40 +141,6 @@ def link_select_all_to_multi_select(
         return [option["value"] for option in all_options]
 
     return active_state
-
-
-@dash_app.callback(
-    Output("page-content", "children"),
-    Input("url", "pathname"),
-)
-def display_initial_page(pathname):
-    try:
-        if pathname.startswith(DASH_MOUNT_ROUTE + CHARTS_ROUTE):
-            if pathname in config.charts:
-                df, config_model = get_charts_meta(config.charts[pathname])
-                fig = create_chart(df=df, config_model=config_model)
-                return create_chart_content(
-                    chart_name=config.charts[pathname],
-                    df=df,
-                    fig=fig,
-                    filters=config_model.chart_params.filters,
-                )
-
-        if pathname.startswith(DASH_MOUNT_ROUTE + TABLES_ROUTE):
-            if pathname in config.table_snippets:
-                return create_table_snippet(
-                    table_name=config.table_snippets[pathname]
-                )
-
-        Response("404 Not Found", HTTPStatus.NOT_FOUND)
-        return [html.H1("404 Not Found")]
-
-    except Exception as e:
-        Response(
-            f"500 Internal Server Error : {e}",
-            HTTPStatus.INTERNAL_SERVER_ERROR,
-        )
-        return [html.H1(f"500 Internal Server Error : {e}")]
 
 
 @dash_app.callback(
@@ -181,7 +212,6 @@ def update_chart_based_on_filter(
         return current_fig
 
 
-# TODO handle numerical
 def _build_filters(
     cat_values,
     num_values_min,

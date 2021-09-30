@@ -7,6 +7,21 @@ from pydantic.class_validators import root_validator
 from app.constant import MAX_NUMBER_FILTERS, DataTypes, PlotlyColorGroup
 
 
+class StyleQueryParam(BaseModel):
+    width: Optional[str] = None
+    height: Optional[str] = None
+
+    @root_validator(pre=True)
+    def cast_list_to_str(cls, values):
+        if isinstance(values["width"], list):
+            values["width"] = values["width"][0]
+
+        if isinstance(values["height"], list):
+            values["height"] = values["height"][0]
+
+        return values
+
+
 class ColumnFilter(BaseModel):
     column: str
     type: DataTypes
