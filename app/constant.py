@@ -46,6 +46,9 @@ class DataTypes(str, BaseEnum):
 class ResourceType(str, BaseEnum):
     chart = "chart"
     table = "table"
+
+
+class ExtendedResourceType(str, BaseEnum):
     color_group = "color-group"
 
 

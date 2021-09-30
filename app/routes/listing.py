@@ -19,6 +19,7 @@ from app.config import get_settings
 from app.constant import (
     STANDARD_DATA_FILENAME,
     STANDARD_STYLE_CONFIG,
+    ExtendedResourceType,
     PlotlyColorGroup,
     ResourceType,
 )
@@ -146,7 +147,7 @@ async def get_built_in_color():
     built_in_colors = {
         k.name: ColorGroupResponse(
             snippet_url=construct_standard_dash_url(
-                name=k.name, resource_type=ResourceType.color_group
+                name=k.name, resource_type=ExtendedResourceType.color_group
             ),
             colors_list=_list_available_color_names(k),
         )
