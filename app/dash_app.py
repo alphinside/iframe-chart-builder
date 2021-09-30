@@ -80,6 +80,13 @@ def display_initial_page(pathname: str, search: str):
                     px.colors, color_group_name
                 ).swatches_continuous()
 
+            default_width, default_height = fig.layout.width, fig.layout.height
+            if query.width is None:
+                query.width = default_width
+
+            if query.height is None:
+                query.height = default_height
+
             fig.update_layout(
                 width=None,
                 height=None,

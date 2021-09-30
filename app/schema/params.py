@@ -13,11 +13,13 @@ class StyleQueryParam(BaseModel):
 
     @root_validator(pre=True)
     def cast_list_to_str(cls, values):
-        if isinstance(values["width"], list):
-            values["width"] = values["width"][0]
+        if "width" in values.keys():
+            if isinstance(values["width"], list):
+                values["width"] = values["width"][0]
 
-        if isinstance(values["height"], list):
-            values["height"] = values["height"][0]
+        if "height" in values.keys():
+            if isinstance(values["height"], list):
+                values["height"] = values["height"][0]
 
         return values
 
