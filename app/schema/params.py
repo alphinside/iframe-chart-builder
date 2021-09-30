@@ -1,6 +1,7 @@
 from collections import Counter
 from typing import Any, List, Optional, Union
 
+import plotly.express as px
 from pydantic import BaseModel, validator
 from pydantic.class_validators import root_validator
 
@@ -56,7 +57,7 @@ class BuiltInColors(BaseModel):
         group = values["group"]
         color_name = values["color_name"]
 
-        if not hasattr(eval(f"px.colors.{group}"), color_name):
+        if not hasattr(getattr(px.colors, group), color_name):
             raise ValueError(
                 f"built in color `{color_name}` not found "
                 f"in color group `{group}`"
@@ -75,7 +76,7 @@ class ColorOptions(BaseModel):
             group = v.group
             color_name = v.color_name
 
-            v = getattr(eval(f"px.colors.{group}"), color_name)
+            v = getattr(getattr(px.colors, group), color_name)
 
         return v
 
@@ -91,7 +92,7 @@ class ColorOptions(BaseModel):
             group = v.group
             color_name = v.color_name
 
-            v = getattr(eval(f"px.colors.{group}"), color_name)
+            v = getattr(getattr(px.colors, group), color_name)
 
         return v
 
@@ -157,3 +158,13 @@ class BubbleMapParams(BaseChartParams):
             raise ValueError("column for size or color cannot both empty")
 
         return values
+
+
+class BubbleChartParams(BaseChartParams):
+    column_for_x: str
+    column_for_y: str
+    column_for_size: Optional[str] = None
+    column_for_color: Optional[str] = None
+    column_for_hover_name: Optional[str] = None
+    apply_log_x: bool = False
+    bubble_size_max: int = 60

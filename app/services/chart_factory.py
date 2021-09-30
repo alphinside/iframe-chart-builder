@@ -16,6 +16,7 @@ from app.schema.params import AppliedFilters, BaseChartParams
 from app.schema.requests import BaseChartBuilderRequest
 from app.services.chart_builder import ChartBuilderInterface
 from app.services.chart_builder.bar import BarChartBuilder
+from app.services.chart_builder.bubble import BubbleChartBuilder
 from app.services.chart_builder.bubble_map import BubbleMapBuilder
 from app.services.chart_builder.choropleth_map import ChoroplethMapBuilder
 from app.services.dash_layout.chart import create_default_chart_style
@@ -88,6 +89,7 @@ factory = ChartBuilderFactory()
 factory.register_type(ChartTypes.bar, BarChartBuilder)
 factory.register_type(ChartTypes.choropleth_map, ChoroplethMapBuilder)
 factory.register_type(ChartTypes.bubble_map, BubbleMapBuilder)
+factory.register_type(ChartTypes.bubble, BubbleChartBuilder)
 
 
 def create_chart(

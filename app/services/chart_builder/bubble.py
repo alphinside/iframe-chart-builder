@@ -6,21 +6,21 @@ from fastapi import HTTPException
 from plotly.graph_objs._figure import Figure
 
 from app.errors import COLUMN_NOT_FOUND_ERROR
-from app.schema.params import BubbleMapParams
+from app.schema.params import BubbleChartParams
 from app.services.chart_builder import ChartBuilderInterface
 
 
-class BubbleMapBuilder(ChartBuilderInterface):
+class BubbleChartBuilder(ChartBuilderInterface):
     def validate_columns(
-        self, chart_params: BubbleMapParams, df: pd.DataFrame
+        self, chart_params: BubbleChartParams, df: pd.DataFrame
     ):
         columns_not_found = []
 
-        if chart_params.column_for_latitude not in df.columns:
-            columns_not_found.append(chart_params.column_for_latitude)
+        if chart_params.column_for_x not in df.columns:
+            columns_not_found.append(chart_params.column_for_x)
 
-        if chart_params.column_for_longitude not in df.columns:
-            columns_not_found.append(chart_params.column_for_longitude)
+        if chart_params.column_for_y not in df.columns:
+            columns_not_found.append(chart_params.column_for_y)
 
         if chart_params.column_for_color is not None:
             if chart_params.column_for_color not in df.columns:
@@ -29,6 +29,10 @@ class BubbleMapBuilder(ChartBuilderInterface):
         if chart_params.column_for_size is not None:
             if chart_params.column_for_size not in df.columns:
                 columns_not_found.append(chart_params.column_for_size)
+
+        if chart_params.column_for_hover_name is not None:
+            if chart_params.column_for_hover_name not in df.columns:
+                columns_not_found.append(chart_params.column_for_hover_name)
 
         if len(columns_not_found) != 0:
             raise HTTPException(
@@ -39,20 +43,20 @@ class BubbleMapBuilder(ChartBuilderInterface):
             )
 
     def build_chart(
-        self, chart_params: BubbleMapParams, df: pd.DataFrame
+        self, chart_params: BubbleChartParams, df: pd.DataFrame
     ) -> Figure:
-        fig = px.scatter_mapbox(
+        fig = px.scatter(
             df,
-            lat=chart_params.column_for_latitude,
-            lon=chart_params.column_for_longitude,
+            x=chart_params.column_for_x,
+            y=chart_params.column_for_y,
             color=chart_params.column_for_color,
-            center={"lat": -4.050027, "lon": 116.375442},
             size=chart_params.column_for_size,
-            zoom=chart_params.zoom_level,
             color_discrete_sequence=chart_params.color_opt.discrete,
             color_continuous_scale=chart_params.color_opt.continuous,
             title=chart_params.title,
-            mapbox_style="open-street-map",
+            log_x=chart_params.apply_log_x,
+            size_max=chart_params.bubble_size_max,
+            hover_name=chart_params.column_for_hover_name,
         )
 
         return fig

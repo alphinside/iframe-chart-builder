@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 from app.constant import ChartTypes
 from app.schema.params import (
     BarChartParams,
+    BubbleChartParams,
     BubbleMapParams,
     ChoroplethMapParams,
 )
@@ -13,6 +14,7 @@ TYPE_PARAMS_MAP = {
     ChartTypes.bar: BarChartParams,
     ChartTypes.choropleth_map: ChoroplethMapParams,
     ChartTypes.bubble_map: BubbleMapParams,
+    ChartTypes.bubble: BubbleChartParams,
 }
 
 StyleDict = Dict[str, Any]
@@ -125,6 +127,45 @@ class BubbleMapBuilderRequest(BaseChartBuilderRequest):
                     "filters": [
                         {"column": "name", "type": "categorical"},
                         {"column": "residents", "type": "numerical"},
+                    ],
+                },
+            }
+        }
+
+
+class BubbleChartBuilderRequest(BaseChartBuilderRequest):
+    chart_params: BubbleChartParams
+    chart_type: ChartTypes = Field(ChartTypes.bubble, const=True)
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "table_name": "example_bubble_chart",
+                "chart_name": "example_bubble_chart",
+                "chart_params": {
+                    "title": "Gap Minder",
+                    "color_opt": {
+                        "discrete": {
+                            "group": "qualitative",
+                            "color_name": "Prism",
+                        },
+                        "continuous": {
+                            "group": "sequential",
+                            "color_name": "Rainbow",
+                        },
+                    },
+                    "column_for_x": "gdpPercap",
+                    "column_for_y": "lifeExp",
+                    "column_for_color": "continent",
+                    "column_for_size": "pop",
+                    "column_for_hover_name": "country",
+                    "apply_log_x": True,
+                    "bubble_size_max": 60,
+                    "filters": [
+                        {"column": "lifeExp", "type": "numerical"},
+                        {"column": "gdpPercap", "type": "numerical"},
+                        {"column": "pop", "type": "numerical"},
+                        {"column": "continent", "type": "categorical"},
                     ],
                 },
             }
