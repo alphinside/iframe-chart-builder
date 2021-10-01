@@ -10,6 +10,7 @@ from app.schema.params import (
     ChoroplethMapParams,
     LineChartParams,
     PieChartParams,
+    RadarChartParams,
     SunburstChartParams,
     WindroseChartParams,
 )
@@ -23,6 +24,7 @@ TYPE_PARAMS_MAP = {
     ChartTypes.pie: PieChartParams,
     ChartTypes.windrose: WindroseChartParams,
     ChartTypes.sunburst: SunburstChartParams,
+    ChartTypes.radar: RadarChartParams,
 }
 
 StyleDict = Dict[str, Any]
@@ -295,6 +297,37 @@ class SunburstChartBuilderRequest(BaseChartBuilderRequest):
                         {"column": "day", "type": "categorical"},
                         {"column": "time", "type": "categorical"},
                     ],
+                },
+            }
+        }
+
+
+class RadarChartBuilderRequest(BaseChartBuilderRequest):
+    chart_params: RadarChartParams
+    chart_type: ChartTypes = Field(ChartTypes.radar, const=True)
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "table_name": "example_radar_chart",
+                "chart_name": "example_radar_chart",
+                "chart_params": {
+                    "title": "Product Attributes",
+                    "color_opt": {
+                        "discrete": {
+                            "group": "qualitative",
+                            "color_name": "Prism",
+                        },
+                    },
+                    "column_for_radius": "products",
+                    "column_for_theta": [
+                        "processing_cost",
+                        "mechanical_properties",
+                        "chemical_stability",
+                        "thermal_stability",
+                        "device_integration",
+                    ],
+                    "fill": "toself",
                 },
             }
         }

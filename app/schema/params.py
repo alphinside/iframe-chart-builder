@@ -5,7 +5,12 @@ import plotly.express as px
 from pydantic import BaseModel, validator
 from pydantic.class_validators import root_validator
 
-from app.constant import MAX_NUMBER_FILTERS, DataTypes, PlotlyColorGroup
+from app.constant import (
+    MAX_NUMBER_FILTERS,
+    DataTypes,
+    FillEnum,
+    PlotlyColorGroup,
+)
 
 
 class StyleQueryParam(BaseModel):
@@ -199,3 +204,9 @@ class SunburstChartParams(BaseChartParams):
     column_for_path: List[str]
     column_for_values: str
     column_for_color: Optional[str] = None
+
+
+class RadarChartParams(BaseChartParams):
+    column_for_radius: str
+    column_for_theta: List[str]
+    fill: Optional[FillEnum] = None

@@ -41,6 +41,7 @@ class ChartTypes(str, BaseEnum):
     pie = "pie"
     windrose = "windrose"
     sunburst = "sunburst"
+    radar = "radar"
 
 
 class DataTypes(str, BaseEnum):
@@ -62,3 +63,8 @@ class PlotlyColorGroup(str, BaseEnum):
     sequential = "sequential"
     diverging = "diverging"
     cyclical = "cyclical"
+
+
+class FillEnum(str, BaseEnum):
+    toself = "toself"
+    tonext = "tonext"

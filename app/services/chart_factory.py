@@ -21,6 +21,7 @@ from app.services.chart_builder.bubble_map import BubbleMapBuilder
 from app.services.chart_builder.choropleth_map import ChoroplethMapBuilder
 from app.services.chart_builder.line import LineChartBuilder
 from app.services.chart_builder.pie import PieChartBuilder
+from app.services.chart_builder.radar import RadarChartBuilder
 from app.services.chart_builder.sunburst import SunburstChartBuilder
 from app.services.chart_builder.windrose import WindroseChartBuilder
 from app.services.dash_layout.chart import create_default_chart_style
@@ -98,6 +99,7 @@ factory.register_type(ChartTypes.line, LineChartBuilder)
 factory.register_type(ChartTypes.pie, PieChartBuilder)
 factory.register_type(ChartTypes.windrose, WindroseChartBuilder)
 factory.register_type(ChartTypes.sunburst, SunburstChartBuilder)
+factory.register_type(ChartTypes.radar, RadarChartBuilder)
 
 
 def create_chart(
