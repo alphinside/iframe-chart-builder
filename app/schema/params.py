@@ -168,3 +168,9 @@ class BubbleChartParams(BaseChartParams):
     column_for_hover_name: Optional[str] = None
     apply_log_x: bool = False
     bubble_size_max: int = 60
+
+
+class LineChartParams(BaseChartParams):
+    column_for_x: str
+    column_for_y: str
+    column_for_color: Optional[str] = None

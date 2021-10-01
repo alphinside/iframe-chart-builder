@@ -37,6 +37,7 @@ class ChartTypes(str, BaseEnum):
     bubble = "bubble"
     choropleth_map = "choropleth_map"
     bubble_map = "bubble_map"
+    line = "line"
 
 
 class DataTypes(str, BaseEnum):
