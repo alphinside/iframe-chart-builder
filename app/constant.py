@@ -39,6 +39,7 @@ class ChartTypes(str, BaseEnum):
     bubble_map = "bubble_map"
     line = "line"
     pie = "pie"
+    windrose = "windrose"
 
 
 class DataTypes(str, BaseEnum):

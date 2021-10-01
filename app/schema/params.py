@@ -187,3 +187,9 @@ class PieChartParams(BaseChartParams):
             raise ValueError("center_hole_ratio must be between 0 and 1")
 
         return v
+
+
+class WindroseChartParams(BaseChartParams):
+    column_for_radius: str
+    column_for_theta: str
+    column_for_color: Optional[str] = None
