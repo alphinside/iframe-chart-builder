@@ -21,6 +21,7 @@ from app.services.chart_builder.bubble_map import BubbleMapBuilder
 from app.services.chart_builder.choropleth_map import ChoroplethMapBuilder
 from app.services.chart_builder.line import LineChartBuilder
 from app.services.chart_builder.pie import PieChartBuilder
+from app.services.chart_builder.windrose import WindroseChartBuilder
 from app.services.dash_layout.chart import create_default_chart_style
 from app.utils import serialize_config
 
@@ -94,6 +95,7 @@ factory.register_type(ChartTypes.bubble_map, BubbleMapBuilder)
 factory.register_type(ChartTypes.bubble, BubbleChartBuilder)
 factory.register_type(ChartTypes.line, LineChartBuilder)
 factory.register_type(ChartTypes.pie, PieChartBuilder)
+factory.register_type(ChartTypes.windrose, WindroseChartBuilder)
 
 
 def create_chart(

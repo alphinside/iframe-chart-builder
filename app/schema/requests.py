@@ -10,6 +10,7 @@ from app.schema.params import (
     ChoroplethMapParams,
     LineChartParams,
     PieChartParams,
+    WindroseChartParams,
 )
 
 TYPE_PARAMS_MAP = {
@@ -19,6 +20,7 @@ TYPE_PARAMS_MAP = {
     ChartTypes.bubble: BubbleChartParams,
     ChartTypes.line: LineChartParams,
     ChartTypes.pie: PieChartParams,
+    ChartTypes.windrose: WindroseChartParams,
 }
 
 StyleDict = Dict[str, Any]
@@ -228,6 +230,35 @@ class PieChartBuilderRequest(BaseChartBuilderRequest):
                     "filters": [
                         {"column": "country", "type": "categorical"},
                     ],
+                },
+            }
+        }
+
+
+class WindroseChartBuilderRequest(BaseChartBuilderRequest):
+    chart_params: WindroseChartParams
+    chart_type: ChartTypes = Field(ChartTypes.windrose, const=True)
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "table_name": "example_windrose_chart",
+                "chart_name": "example_windrose_chart",
+                "chart_params": {
+                    "title": "Wind Distribution",
+                    "color_opt": {
+                        "discrete": {
+                            "group": "qualitative",
+                            "color_name": "Prism",
+                        },
+                        "continuous": {
+                            "group": "sequential",
+                            "color_name": "Rainbow",
+                        },
+                    },
+                    "column_for_radius": "frequency",
+                    "column_for_theta": "direction",
+                    "column_for_color": "strength",
                 },
             }
         }
