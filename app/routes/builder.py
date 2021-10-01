@@ -11,6 +11,7 @@ from app.schema.requests import (
     BubbleMapBuilderRequest,
     ChoroplethMapBuilderRequest,
     LineChartBuilderRequest,
+    PieChartBuilderRequest,
 )
 from app.schema.response import ChartBuilderData, ChartBuilderResponse
 from app.services.chart_factory import ChartBuilderService
@@ -106,6 +107,22 @@ async def register_new_bubble_chart(request: BubbleChartBuilderRequest):
     name="create_new_line_chart",
 )
 async def register_new_line_chart(request: LineChartBuilderRequest):
+    chart_url = register_chart_config(request)
+
+    return ChartBuilderResponse(
+        data=ChartBuilderData(
+            chart_name=request.chart_name, chart_url=chart_url
+        )
+    )
+
+
+@router.post(
+    "/chart/pie",
+    response_model=ChartBuilderResponse,
+    summary="Create new pie chart",
+    name="create_new_pie_chart",
+)
+async def register_new_pie_chart(request: PieChartBuilderRequest):
     chart_url = register_chart_config(request)
 
     return ChartBuilderResponse(
