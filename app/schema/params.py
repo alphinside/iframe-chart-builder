@@ -174,3 +174,16 @@ class LineChartParams(BaseChartParams):
     column_for_x: str
     column_for_y: str
     column_for_color: Optional[str] = None
+
+
+class PieChartParams(BaseChartParams):
+    column_for_values: str
+    column_for_names: str
+    center_hole_ratio: float = 0.0
+
+    @validator("center_hole_ratio")
+    def check_and_cast_column_for_y(cls, v):
+        if v < 0 or v > 1:
+            raise ValueError("center_hole_ratio must be between 0 and 1")
+
+        return v

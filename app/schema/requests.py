@@ -9,6 +9,7 @@ from app.schema.params import (
     BubbleMapParams,
     ChoroplethMapParams,
     LineChartParams,
+    PieChartParams,
 )
 
 TYPE_PARAMS_MAP = {
@@ -17,6 +18,7 @@ TYPE_PARAMS_MAP = {
     ChartTypes.bubble_map: BubbleMapParams,
     ChartTypes.bubble: BubbleChartParams,
     ChartTypes.line: LineChartParams,
+    ChartTypes.pie: PieChartParams,
 }
 
 StyleDict = Dict[str, Any]
@@ -190,10 +192,6 @@ class LineChartBuilderRequest(BaseChartBuilderRequest):
                             "group": "qualitative",
                             "color_name": "Prism",
                         },
-                        "continuous": {
-                            "group": "sequential",
-                            "color_name": "Rainbow",
-                        },
                     },
                     "column_for_x": "year",
                     "column_for_y": "lifeExp",
@@ -201,6 +199,34 @@ class LineChartBuilderRequest(BaseChartBuilderRequest):
                     "filters": [
                         {"column": "lifeExp", "type": "numerical"},
                         {"column": "continent", "type": "categorical"},
+                    ],
+                },
+            }
+        }
+
+
+class PieChartBuilderRequest(BaseChartBuilderRequest):
+    chart_params: PieChartParams
+    chart_type: ChartTypes = Field(ChartTypes.pie, const=True)
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "table_name": "example_pie_chart",
+                "chart_name": "example_pie_chart",
+                "chart_params": {
+                    "title": "Gap Minder",
+                    "color_opt": {
+                        "discrete": {
+                            "group": "qualitative",
+                            "color_name": "Prism",
+                        },
+                    },
+                    "column_for_values": "pop",
+                    "column_for_names": "country",
+                    "center_hole_ratio": 0.3,
+                    "filters": [
+                        {"column": "country", "type": "categorical"},
                     ],
                 },
             }
