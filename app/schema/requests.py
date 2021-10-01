@@ -10,6 +10,7 @@ from app.schema.params import (
     ChoroplethMapParams,
     LineChartParams,
     PieChartParams,
+    SunburstChartParams,
     WindroseChartParams,
 )
 
@@ -21,6 +22,7 @@ TYPE_PARAMS_MAP = {
     ChartTypes.line: LineChartParams,
     ChartTypes.pie: PieChartParams,
     ChartTypes.windrose: WindroseChartParams,
+    ChartTypes.sunburst: SunburstChartParams,
 }
 
 StyleDict = Dict[str, Any]
@@ -259,6 +261,40 @@ class WindroseChartBuilderRequest(BaseChartBuilderRequest):
                     "column_for_radius": "frequency",
                     "column_for_theta": "direction",
                     "column_for_color": "strength",
+                },
+            }
+        }
+
+
+class SunburstChartBuilderRequest(BaseChartBuilderRequest):
+    chart_params: SunburstChartParams
+    chart_type: ChartTypes = Field(ChartTypes.sunburst, const=True)
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "table_name": "example_sunburst_chart",
+                "chart_name": "example_sunburst_chart",
+                "chart_params": {
+                    "title": "Tips Distribution",
+                    "color_opt": {
+                        "discrete": {
+                            "group": "qualitative",
+                            "color_name": "Prism",
+                        },
+                        "continuous": {
+                            "group": "sequential",
+                            "color_name": "Rainbow",
+                        },
+                    },
+                    "column_for_path": ["sex", "day", "time"],
+                    "column_for_values": "total_bill",
+                    "column_for_color": "day",
+                    "filters": [
+                        {"column": "sex", "type": "categorical"},
+                        {"column": "day", "type": "categorical"},
+                        {"column": "time", "type": "categorical"},
+                    ],
                 },
             }
         }

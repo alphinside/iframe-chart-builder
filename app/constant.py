@@ -40,6 +40,7 @@ class ChartTypes(str, BaseEnum):
     line = "line"
     pie = "pie"
     windrose = "windrose"
+    sunburst = "sunburst"
 
 
 class DataTypes(str, BaseEnum):

@@ -12,6 +12,7 @@ from app.schema.requests import (
     ChoroplethMapBuilderRequest,
     LineChartBuilderRequest,
     PieChartBuilderRequest,
+    SunburstChartBuilderRequest,
     WindroseChartBuilderRequest,
 )
 from app.schema.response import ChartBuilderData, ChartBuilderResponse
@@ -140,6 +141,22 @@ async def register_new_pie_chart(request: PieChartBuilderRequest):
     name="create_new_windrose_chart",
 )
 async def register_new_windrose_chart(request: WindroseChartBuilderRequest):
+    chart_url = register_chart_config(request)
+
+    return ChartBuilderResponse(
+        data=ChartBuilderData(
+            chart_name=request.chart_name, chart_url=chart_url
+        )
+    )
+
+
+@router.post(
+    "/chart/sunburst",
+    response_model=ChartBuilderResponse,
+    summary="Create new sunburst chart",
+    name="create_new_sunburst_chart",
+)
+async def register_new_sunburst_chart(request: SunburstChartBuilderRequest):
     chart_url = register_chart_config(request)
 
     return ChartBuilderResponse(
