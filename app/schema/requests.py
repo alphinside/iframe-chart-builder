@@ -8,6 +8,7 @@ from app.schema.params import (
     BubbleChartParams,
     BubbleMapParams,
     ChoroplethMapParams,
+    LineChartParams,
 )
 
 TYPE_PARAMS_MAP = {
@@ -15,6 +16,7 @@ TYPE_PARAMS_MAP = {
     ChartTypes.choropleth_map: ChoroplethMapParams,
     ChartTypes.bubble_map: BubbleMapParams,
     ChartTypes.bubble: BubbleChartParams,
+    ChartTypes.line: LineChartParams,
 }
 
 StyleDict = Dict[str, Any]
@@ -165,6 +167,39 @@ class BubbleChartBuilderRequest(BaseChartBuilderRequest):
                         {"column": "lifeExp", "type": "numerical"},
                         {"column": "gdpPercap", "type": "numerical"},
                         {"column": "pop", "type": "numerical"},
+                        {"column": "continent", "type": "categorical"},
+                    ],
+                },
+            }
+        }
+
+
+class LineChartBuilderRequest(BaseChartBuilderRequest):
+    chart_params: LineChartParams
+    chart_type: ChartTypes = Field(ChartTypes.line, const=True)
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "table_name": "example_line_chart",
+                "chart_name": "example_line_chart",
+                "chart_params": {
+                    "title": "Gap Minder",
+                    "color_opt": {
+                        "discrete": {
+                            "group": "qualitative",
+                            "color_name": "Prism",
+                        },
+                        "continuous": {
+                            "group": "sequential",
+                            "color_name": "Rainbow",
+                        },
+                    },
+                    "column_for_x": "year",
+                    "column_for_y": "lifeExp",
+                    "column_for_color": "country",
+                    "filters": [
+                        {"column": "lifeExp", "type": "numerical"},
                         {"column": "continent", "type": "categorical"},
                     ],
                 },

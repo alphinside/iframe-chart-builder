@@ -56,7 +56,7 @@ def create_categorical_filter(
 
     dropdown = html.Div(
         [
-            dcc.Markdown(f"**{column_filter.column.title()}**"),
+            dcc.Markdown(f"**{column_filter.column}**"),
             dcc.Dropdown(
                 id={
                     "index": column_filter.column,
@@ -95,7 +95,7 @@ def create_numerical_filter(
 
     input_fields = html.Div(
         [
-            dcc.Markdown(f"**{column_filter.column.title()}**"),
+            dcc.Markdown(f"**{column_filter.column}**"),
             html.Div(
                 [
                     html.Div(

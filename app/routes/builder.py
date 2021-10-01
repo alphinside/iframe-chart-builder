@@ -10,6 +10,7 @@ from app.schema.requests import (
     BubbleChartBuilderRequest,
     BubbleMapBuilderRequest,
     ChoroplethMapBuilderRequest,
+    LineChartBuilderRequest,
 )
 from app.schema.response import ChartBuilderData, ChartBuilderResponse
 from app.services.chart_factory import ChartBuilderService
@@ -89,6 +90,22 @@ async def register_new_bubble_map(request: BubbleMapBuilderRequest):
     name="create_new_bubble_chart",
 )
 async def register_new_bubble_chart(request: BubbleChartBuilderRequest):
+    chart_url = register_chart_config(request)
+
+    return ChartBuilderResponse(
+        data=ChartBuilderData(
+            chart_name=request.chart_name, chart_url=chart_url
+        )
+    )
+
+
+@router.post(
+    "/chart/line",
+    response_model=ChartBuilderResponse,
+    summary="Create new line chart",
+    name="create_new_line_chart",
+)
+async def register_new_line_chart(request: LineChartBuilderRequest):
     chart_url = register_chart_config(request)
 
     return ChartBuilderResponse(
