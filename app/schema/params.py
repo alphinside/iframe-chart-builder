@@ -193,3 +193,9 @@ class WindroseChartParams(BaseChartParams):
     column_for_radius: str
     column_for_theta: str
     column_for_color: Optional[str] = None
+
+
+class SunburstChartParams(BaseChartParams):
+    column_for_path: List[str]
+    column_for_values: str
+    column_for_color: Optional[str] = None
