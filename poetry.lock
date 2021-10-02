@@ -737,7 +737,7 @@ twisted = ["twisted"]
 name = "toml"
 version = "0.10.2"
 description = "Python Library for Tom's Obvious, Minimal Language"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 
@@ -806,7 +806,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "b0a72cc39694759a44aae3a0e792270aac12b86a60d0aeb9a285af485c81e490"
+content-hash = "04383018ca29f88d44748f7fbdf3848739983d533745b7f6358118bdd52971e5"
 
 [metadata.files]
 aiofiles = [
