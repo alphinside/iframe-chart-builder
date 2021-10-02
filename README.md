@@ -75,6 +75,8 @@ Example :
 ## General Usage Flow
 
 1. Upload your tables
+    - You can see example data that can be used for each chart type under
+        `examples/data` directory
 2. Create new chart configuration
 3. Get your charts URL
 4. Modify the chart HTML `div` styling as you need
