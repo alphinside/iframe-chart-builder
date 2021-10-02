@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  chart-builder:
+    image: "alphinside/chart-builder"
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./${CHARTS_OUTPUT_DIR}:/${CHARTS_OUTPUT_DIR}
+      - ./${TABLES_OUTPUT_DIR}:/${TABLES_OUTPUT_DIR}
+    env_file:
+      - .env

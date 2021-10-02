@@ -19,6 +19,7 @@ pyarrow = "^5.0.0"
 fastparquet = "^0.7.1"
 dash = "^2.0.0"
 config = "^0.5.1"
+toml = "^0.10.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
