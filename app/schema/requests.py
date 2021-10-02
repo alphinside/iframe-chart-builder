@@ -36,6 +36,22 @@ class ChartStyle(BaseModel):
     filters_entity: Optional[StyleDict] = {}
     table: Optional[StyleDict] = {}
 
+    class Config:
+        schema_extra = {
+            "figure": {
+                "height": "50vh",
+                "width": "100vh",
+                "display": "inline-block",
+            },
+            "filters_group": {
+                "height": "50vh",
+                "width": "20vh",
+                "display": "inline-block",
+                "vertical-align": "top",
+            },
+            "filters_entity": {},
+        }
+
 
 class BaseChartBuilderRequest(BaseModel):
     table_name: str

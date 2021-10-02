@@ -59,14 +59,6 @@ Example :
 - Table snippet visualization
 - Available built-in color visualization
 
-## General Usage Flow
-
-1. Upload your tables
-2. Create new chart configuration
-3. Get your charts URL
-4. Modify the chart HTML `div` styling as you need
-5. Embed the chart into your own website
-
 ## Installation
 
 1. Install `docker` version >= 19.03
@@ -79,3 +71,47 @@ Example :
     `ports` config on `docker-compose.yml`
 6. To see all available backend endpoints, go to `/docs`. E.g.
     `localhost:8080/docs`
+
+## General Usage Flow
+
+1. Upload your tables
+2. Create new chart configuration
+3. Get your charts URL
+4. Modify the chart HTML `div` styling as you need
+5. Embed the chart into your own website
+
+## Div Style Guide
+
+To modify chart `div` styling you need to update the chart configuration
+using POST `api/listing/{resource}/{name}/style-config` endpoint, with the
+following body payload example
+
+```json
+{
+    "figure":{"height": "50vh", "width": "100vh", "display": "inline-block"},
+    "filters_group":{
+        "height": "50vh",
+        "width": "20vh",
+        "display": "inline-block",
+        "vertical-align": "top",
+    },
+    "filters_entity":{},
+}
+```
+
+- `figure` keys will provide `div` styling to chart area, shown in orange
+    rectangle in image below
+
+![`figure` style area](examples/images/figure.jpg)
+
+- `filters_group` keys will provide `div` styling to filters area, shown in orange
+    rectangle in image below
+
+![`filters_group` style area](examples/images/filters_group.jpg)
+
+- `filters_entity` keys will provide `div` styling to individual filter area,
+    all individual filter is being applied with same configuration. Orange
+    rectangle is individual filter which is a `categorical` filter, and purple
+    rectangle is individual filter for `numerical` filter
+
+![`filters_entity` style area](examples/images/filters_entity.jpg)
