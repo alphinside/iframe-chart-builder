@@ -49,6 +49,10 @@ Example :
     - Sunburst
     - Windrose
   - Automatically create data filters for interactive charts
+  - Configured chart persistence is being kept by saving the `POST`ed
+    chart configuration as JSON files in the `${CHARTS_OUTPUT_DIR}` directory.
+    Dash will load the configuration file each time the chart resource URL is
+    called
 - List all configured charts
 - Delete configured chars
 - Get and update charts HTML `div` styling
