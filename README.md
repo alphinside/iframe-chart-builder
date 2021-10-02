@@ -70,7 +70,7 @@ Example :
     [this link](https://docs.docker.com/compose/install/)
 3. Modify `.env.example` file into appropriate settings and rename it
     to `.env`
-4. Run `docker-compose up`
+4. Run `docker-compose up` ( to run as background process, add `-d` )
 5. Service will be available on port `8080`, to change this, modify the
     `ports` config on `docker-compose.yml`
 6. To see all available backend endpoints, go to `/docs`. E.g.
