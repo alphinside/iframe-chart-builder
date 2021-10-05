@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/alphinside/iframe-chart-builder/compare/v1.0.0...v1.1.0) (2021-10-05)
+
+
+### Features
+
+* added barmode in barchart ([fbbd296](https://github.com/alphinside/iframe-chart-builder/commit/fbbd29689d598c6b33e8338935ed8735dceab280))
+* added gunicorn process manager ([#26](https://github.com/alphinside/iframe-chart-builder/issues/26)) ([2ec6427](https://github.com/alphinside/iframe-chart-builder/commit/2ec6427623f24d83f32128db8b78a322b386540e))
+
 ## 1.0.0 (2021-10-02)
 
 
