@@ -28,7 +28,4 @@ COPY ./app /app
 ENV PORT=8080
 EXPOSE $PORT
 RUN set -e && . /opt/pysetup/.venv/bin/activate
-ENTRYPOINT /opt/pysetup/.venv/bin/gunicorn app.main:app \
-    --workers $NROF_WORKERS \
-    --worker-class uvicorn.workers.UvicornWorker \
-    --bind 0.0.0.0:$PORT
+ENTRYPOINT /opt/pysetup/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port $PORT
