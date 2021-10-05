@@ -68,3 +68,8 @@ class PlotlyColorGroup(str, BaseEnum):
 class FillEnum(str, BaseEnum):
     toself = "toself"
     tonext = "tonext"
+
+
+class BarMode(str, BaseEnum):
+    stack = "stack"
+    group = "group"

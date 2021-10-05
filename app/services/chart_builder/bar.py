@@ -18,6 +18,7 @@ class BarChartBuilder(ChartBuilderInterface):
             "color": chart_params.column_for_color,
             "color_discrete_sequence": chart_params.color_opt.discrete,
             "color_continuous_scale": chart_params.color_opt.continuous,
+            "barmode": chart_params.barmode,
         }
 
         if isinstance(chart_params.column_for_y, list):

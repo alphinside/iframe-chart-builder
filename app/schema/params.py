@@ -7,6 +7,7 @@ from pydantic.class_validators import root_validator
 
 from app.constant import (
     MAX_NUMBER_FILTERS,
+    BarMode,
     DataTypes,
     FillEnum,
     PlotlyColorGroup,
@@ -105,7 +106,7 @@ class ColorOptions(BaseModel):
 class BaseChartParams(BaseModel):
     title: Optional[str] = None
     filters: List[ColumnFilter] = []
-    color_opt: Optional[ColorOptions] = None
+    color_opt: ColorOptions = ColorOptions()
 
     @validator("filters")
     def validate_and_limit_filters(cls, v):
@@ -129,6 +130,7 @@ class BarChartParams(BaseChartParams):
     column_for_x: str
     column_for_y: Union[List[str], str]
     column_for_color: Optional[str] = None
+    barmode: BarMode = BarMode.stack
 
     @validator("column_for_y")
     def check_and_cast_column_for_y(cls, v):
