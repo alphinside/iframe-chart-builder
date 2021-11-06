@@ -1,4 +1,6 @@
+import os
 import shutil
+from datetime import datetime
 from http import HTTPStatus
 from typing import List
 
@@ -17,8 +19,10 @@ from fastapi import (
 
 from app.config import get_settings
 from app.constant import (
+    STANDARD_CHARTS_CONFIG,
     STANDARD_DATA_FILENAME,
     STANDARD_STYLE_CONFIG,
+    ChartTypes,
     ExtendedResourceType,
     PlotlyColorGroup,
     ResourceType,
@@ -42,6 +46,7 @@ from app.services.validator import (
     validate_resource_existence,
 )
 from app.utils import (
+    check_validate_chart_config,
     construct_standard_dash_url,
     serialize_config,
     serialize_data,
@@ -113,7 +118,24 @@ async def get_tables():
     tables = []
 
     for url, name in config.table_snippets.items():
-        tables.append(Listing(name=name, url=url))
+        data_path = (
+            get_settings().tables_output_dir / name / STANDARD_DATA_FILENAME
+        )
+        created_at = datetime.fromtimestamp(
+            os.path.getctime(data_path)
+        ).isoformat()
+        modified_at = datetime.fromtimestamp(
+            os.path.getmtime(data_path)
+        ).isoformat()
+        tables.append(
+            Listing(
+                name=name,
+                url=url,
+                type=ChartTypes.table,
+                created_at=created_at,
+                modified_at=modified_at,
+            )
+        )
 
     return ListingResponse(data=tables)
 
@@ -125,7 +147,28 @@ async def get_charts():
     charts = []
 
     for url, name in config.charts.items():
-        charts.append(Listing(name=name, url=url))
+        chart_config = check_validate_chart_config(name)
+        created_at = datetime.fromtimestamp(
+            os.path.getctime(
+                get_settings().charts_output_dir
+                / name
+                / STANDARD_CHARTS_CONFIG
+            )
+        ).isoformat()
+        modified_at = datetime.fromtimestamp(
+            os.path.getmtime(
+                get_settings().charts_output_dir / name / STANDARD_STYLE_CONFIG
+            )
+        ).isoformat()
+        charts.append(
+            Listing(
+                name=name,
+                url=url,
+                type=chart_config.chart_type,
+                created_at=created_at,
+                modified_at=modified_at,
+            )
+        )
 
     return ListingResponse(data=charts)
 

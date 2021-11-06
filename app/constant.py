@@ -42,6 +42,7 @@ class ChartTypes(str, BaseEnum):
     windrose = "windrose"
     sunburst = "sunburst"
     radar = "radar"
+    table = "table"
 
 
 class DataTypes(str, BaseEnum):
