@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/alphinside/iframe-chart-builder/compare/v1.2.0...v1.3.0) (2021-11-06)
+
+
+### Features
+
+* added bar chart orientation support ([#28](https://github.com/alphinside/iframe-chart-builder/issues/28)) ([566bdad](https://github.com/alphinside/iframe-chart-builder/commit/566bdad4df3f922eca1fda95e3b7dca8096e4db6))
+
 ## [1.2.0](https://github.com/alphinside/iframe-chart-builder/compare/v1.1.1...v1.2.0) (2021-11-06)
 
 
