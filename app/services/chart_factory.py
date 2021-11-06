@@ -117,4 +117,6 @@ def create_chart(
         chart_params=config_model.chart_params,
     )
 
+    fig.update_layout(template="simple_white")
+
     return fig
