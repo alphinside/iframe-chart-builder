@@ -12,10 +12,6 @@ class BarChartBuilder(ChartBuilderInterface):
         self, chart_params: BarChartParams, df: pd.DataFrame
     ) -> Figure:
 
-        import pdb
-
-        pdb.set_trace()
-
         kwargs = {
             "x": chart_params.column_for_x,
             "y": chart_params.column_for_y,
