@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/alphinside/iframe-chart-builder/compare/v1.1.1...v1.2.0) (2021-11-06)
+
+
+### Features
+
+* added more listing info on api get listings, percentage to bar chart long format ([#27](https://github.com/alphinside/iframe-chart-builder/issues/27)) ([236b79e](https://github.com/alphinside/iframe-chart-builder/commit/236b79e93c85eaff6ca1ae15cb1525dc83174ca7))
+
 ### [1.1.1](https://github.com/alphinside/iframe-chart-builder/compare/v1.1.0...v1.1.1) (2021-10-05)
 
 
