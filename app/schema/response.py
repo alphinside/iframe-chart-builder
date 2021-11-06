@@ -3,7 +3,7 @@ from typing import List, Union
 
 from pydantic import BaseModel, Field, create_model
 
-from app.constant import PlotlyColorGroup
+from app.constant import ChartTypes, PlotlyColorGroup
 
 
 class UploadSuccessData(BaseModel):
@@ -35,6 +35,9 @@ class GeneralSuccessResponse(BaseModel):
 class Listing(BaseModel):
     name: str
     url: str
+    type: ChartTypes
+    created_at: str
+    modified_at: str
 
 
 class ListingResponse(BaseModel):
