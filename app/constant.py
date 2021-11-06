@@ -74,3 +74,8 @@ class FillEnum(str, BaseEnum):
 class BarMode(str, BaseEnum):
     stack = "stack"
     group = "group"
+
+
+class BarOrientation(str, BaseEnum):
+    v = "vertical"
+    h = "horizontal"

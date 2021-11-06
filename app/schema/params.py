@@ -8,6 +8,7 @@ from pydantic.class_validators import root_validator
 from app.constant import (
     MAX_NUMBER_FILTERS,
     BarMode,
+    BarOrientation,
     DataTypes,
     FillEnum,
     PlotlyColorGroup,
@@ -131,6 +132,7 @@ class BarChartParams(BaseChartParams):
     column_for_y: Union[List[str], str]
     column_for_color: Optional[str] = None
     barmode: BarMode = BarMode.stack
+    orientation: BarOrientation = BarOrientation.v
 
     @validator("column_for_y")
     def check_and_cast_column_for_y(cls, v):
