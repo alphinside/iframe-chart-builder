@@ -82,7 +82,7 @@ class BarChartBuilderRequest(BaseChartBuilderRequest):
                         },
                     },
                     "column_for_x": "nation",
-                    "column_for_y": ["count"],
+                    "column_for_y": "count",
                     "column_for_color": "medal",
                     "barmode": "stack",
                     "orientation": "vertical",
