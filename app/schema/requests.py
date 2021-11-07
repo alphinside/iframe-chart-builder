@@ -64,288 +64,42 @@ class BarChartBuilderRequest(BaseChartBuilderRequest):
     chart_params: BarChartParams
     chart_type: ChartTypes = Field(ChartTypes.bar, const=True)
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "table_name": "example_bar_long",
-                "chart_name": "example_bar_long",
-                "chart_params": {
-                    "title": "Medal Winnings",
-                    "color_opt": {
-                        "discrete": {
-                            "group": "qualitative",
-                            "color_name": "Prism",
-                        },
-                        "continuous": {
-                            "group": "sequential",
-                            "color_name": "Rainbow",
-                        },
-                    },
-                    "column_for_x": "nation",
-                    "column_for_y": "count",
-                    "column_for_color": "medal",
-                    "barmode": "stack",
-                    "orientation": "vertical",
-                    "filters": [
-                        {"column": "medal", "type": "categorical"},
-                        {"column": "count", "type": "numerical"},
-                    ],
-                },
-            }
-        }
-
 
 class ChoroplethMapBuilderRequest(BaseChartBuilderRequest):
     chart_params: ChoroplethMapParams
     chart_type: ChartTypes = Field(ChartTypes.choropleth_map, const=True)
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "table_name": "example_choropleth_map",
-                "chart_name": "example_choropleth_map",
-                "chart_params": {
-                    "title": "Indonesia Population",
-                    "color_opt": {
-                        "discrete": {
-                            "group": "qualitative",
-                            "color_name": "Prism",
-                        },
-                        "continuous": {
-                            "group": "sequential",
-                            "color_name": "Rainbow",
-                        },
-                    },
-                    "column_for_location": "state",
-                    "column_for_color": "residents",
-                    "filters": [
-                        {"column": "state", "type": "categorical"},
-                        {"column": "residents", "type": "numerical"},
-                    ],
-                },
-            }
-        }
 
 
 class BubbleMapBuilderRequest(BaseChartBuilderRequest):
     chart_params: BubbleMapParams
     chart_type: ChartTypes = Field(ChartTypes.bubble_map, const=True)
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "table_name": "example_bubble_map",
-                "chart_name": "example_bubble_map",
-                "chart_params": {
-                    "title": "Indonesia Population",
-                    "color_opt": {
-                        "discrete": {
-                            "group": "qualitative",
-                            "color_name": "Prism",
-                        },
-                        "continuous": {
-                            "group": "sequential",
-                            "color_name": "Rainbow",
-                        },
-                    },
-                    "column_for_latitude": "latitude",
-                    "column_for_longitude": "longitude",
-                    "column_for_color": "name",
-                    "column_for_size": "residents",
-                    "filters": [
-                        {"column": "name", "type": "categorical"},
-                        {"column": "residents", "type": "numerical"},
-                    ],
-                },
-            }
-        }
-
 
 class BubbleChartBuilderRequest(BaseChartBuilderRequest):
     chart_params: BubbleChartParams
     chart_type: ChartTypes = Field(ChartTypes.bubble, const=True)
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "table_name": "example_bubble_chart",
-                "chart_name": "example_bubble_chart",
-                "chart_params": {
-                    "title": "Gap Minder",
-                    "color_opt": {
-                        "discrete": {
-                            "group": "qualitative",
-                            "color_name": "Prism",
-                        },
-                        "continuous": {
-                            "group": "sequential",
-                            "color_name": "Rainbow",
-                        },
-                    },
-                    "column_for_x": "gdpPercap",
-                    "column_for_y": "lifeExp",
-                    "column_for_color": "continent",
-                    "column_for_size": "pop",
-                    "column_for_hover_name": "country",
-                    "apply_log_x": True,
-                    "bubble_size_max": 60,
-                    "filters": [
-                        {"column": "lifeExp", "type": "numerical"},
-                        {"column": "gdpPercap", "type": "numerical"},
-                        {"column": "pop", "type": "numerical"},
-                        {"column": "continent", "type": "categorical"},
-                    ],
-                },
-            }
-        }
 
 
 class LineChartBuilderRequest(BaseChartBuilderRequest):
     chart_params: LineChartParams
     chart_type: ChartTypes = Field(ChartTypes.line, const=True)
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "table_name": "example_line_chart",
-                "chart_name": "example_line_chart",
-                "chart_params": {
-                    "title": "Gap Minder",
-                    "color_opt": {
-                        "discrete": {
-                            "group": "qualitative",
-                            "color_name": "Prism",
-                        },
-                    },
-                    "column_for_x": "year",
-                    "column_for_y": "lifeExp",
-                    "column_for_color": "country",
-                    "filters": [
-                        {"column": "lifeExp", "type": "numerical"},
-                        {"column": "continent", "type": "categorical"},
-                    ],
-                },
-            }
-        }
-
 
 class PieChartBuilderRequest(BaseChartBuilderRequest):
     chart_params: PieChartParams
     chart_type: ChartTypes = Field(ChartTypes.pie, const=True)
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "table_name": "example_pie_chart",
-                "chart_name": "example_pie_chart",
-                "chart_params": {
-                    "title": "Gap Minder",
-                    "color_opt": {
-                        "discrete": {
-                            "group": "qualitative",
-                            "color_name": "Prism",
-                        },
-                    },
-                    "column_for_values": "pop",
-                    "column_for_names": "country",
-                    "center_hole_ratio": 0.3,
-                    "filters": [
-                        {"column": "country", "type": "categorical"},
-                    ],
-                },
-            }
-        }
 
 
 class WindroseChartBuilderRequest(BaseChartBuilderRequest):
     chart_params: WindroseChartParams
     chart_type: ChartTypes = Field(ChartTypes.windrose, const=True)
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "table_name": "example_windrose_chart",
-                "chart_name": "example_windrose_chart",
-                "chart_params": {
-                    "title": "Wind Distribution",
-                    "color_opt": {
-                        "discrete": {
-                            "group": "qualitative",
-                            "color_name": "Prism",
-                        },
-                        "continuous": {
-                            "group": "sequential",
-                            "color_name": "Rainbow",
-                        },
-                    },
-                    "column_for_radius": "frequency",
-                    "column_for_theta": "direction",
-                    "column_for_color": "strength",
-                },
-            }
-        }
-
 
 class SunburstChartBuilderRequest(BaseChartBuilderRequest):
     chart_params: SunburstChartParams
     chart_type: ChartTypes = Field(ChartTypes.sunburst, const=True)
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "table_name": "example_sunburst_chart",
-                "chart_name": "example_sunburst_chart",
-                "chart_params": {
-                    "title": "Tips Distribution",
-                    "color_opt": {
-                        "discrete": {
-                            "group": "qualitative",
-                            "color_name": "Prism",
-                        },
-                        "continuous": {
-                            "group": "sequential",
-                            "color_name": "Rainbow",
-                        },
-                    },
-                    "column_for_path": ["sex", "day", "time"],
-                    "column_for_values": "total_bill",
-                    "column_for_color": "day",
-                    "filters": [
-                        {"column": "sex", "type": "categorical"},
-                        {"column": "day", "type": "categorical"},
-                        {"column": "time", "type": "categorical"},
-                    ],
-                },
-            }
-        }
-
 
 class RadarChartBuilderRequest(BaseChartBuilderRequest):
     chart_params: RadarChartParams
     chart_type: ChartTypes = Field(ChartTypes.radar, const=True)
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "table_name": "example_radar_chart",
-                "chart_name": "example_radar_chart",
-                "chart_params": {
-                    "title": "Product Attributes",
-                    "color_opt": {
-                        "discrete": {
-                            "group": "qualitative",
-                            "color_name": "Prism",
-                        },
-                    },
-                    "column_for_radius": "products",
-                    "column_for_theta": [
-                        "processing_cost",
-                        "mechanical_properties",
-                        "chemical_stability",
-                        "thermal_stability",
-                        "device_integration",
-                    ],
-                    "fill": "toself",
-                },
-            }
-        }
