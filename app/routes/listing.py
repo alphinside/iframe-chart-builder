@@ -222,6 +222,7 @@ async def delete_resources(
             name=name, resource_type=ResourceType.table
         )
         config.table_snippets.pop(url, None)
+        config.table_dfs.pop(name, None)
     else:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
