@@ -40,8 +40,15 @@ class Listing(BaseModel):
     modified_at: str
 
 
+class PaginationMeta(BaseModel):
+    total: int
+    current_page: int
+    page_size: int
+
+
 class ListingResponse(BaseModel):
     data: List[Listing]
+    meta: PaginationMeta
 
 
 class ColorGroupResponse(BaseModel):

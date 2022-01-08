@@ -36,6 +36,7 @@ from app.schema.response import (
     GeneralSuccessResponse,
     Listing,
     ListingResponse,
+    PaginationMeta,
     SuccessMessage,
     UploadSuccessData,
     UploadSuccessResponse,
@@ -114,10 +115,17 @@ async def upload(
 @router.get(
     "/tables", response_model=ListingResponse, summary="Get table listing"
 )
-async def get_tables():
+async def get_tables(current_page: int = 1, page_size: int = 10):
     tables = []
 
-    for url, name in config.table_snippets.items():
+    start_idx_range = (current_page - 1) * page_size
+    end_idx_range = current_page * page_size
+
+    paged_items = list(config.table_snippets.items())[
+        start_idx_range:end_idx_range
+    ]
+
+    for url, name in paged_items:
         data_path = (
             get_settings().tables_output_dir / name / STANDARD_DATA_FILENAME
         )
@@ -137,16 +145,28 @@ async def get_tables():
             )
         )
 
-    return ListingResponse(data=tables)
+    return ListingResponse(
+        data=tables,
+        meta=PaginationMeta(
+            current_page=current_page,
+            page_size=page_size,
+            total=len(config.table_snippets.items()),
+        ),
+    )
 
 
 @router.get(
     "/charts", response_model=ListingResponse, summary="Get chart listing"
 )
-async def get_charts():
+async def get_charts(current_page: int = 1, page_size: int = 10):
     charts = []
 
-    for url, name in config.charts.items():
+    start_idx_range = (current_page - 1) * page_size
+    end_idx_range = current_page * page_size
+
+    paged_items = list(config.charts.items())[start_idx_range:end_idx_range]
+
+    for url, name in paged_items:
         chart_config = check_validate_chart_config(name)
         created_at = datetime.fromtimestamp(
             os.path.getctime(
@@ -170,7 +190,14 @@ async def get_charts():
             )
         )
 
-    return ListingResponse(data=charts)
+    return ListingResponse(
+        data=charts,
+        meta=PaginationMeta(
+            current_page=current_page,
+            page_size=page_size,
+            total=len(config.charts.items()),
+        ),
+    )
 
 
 @router.get(
