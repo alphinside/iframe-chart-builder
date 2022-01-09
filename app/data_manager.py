@@ -52,7 +52,7 @@ def apply_filter(
     df: pd.DataFrame, applied_filters: AppliedFilters
 ) -> pd.DataFrame:
     for column_filter in applied_filters.categorical:
-        df = df.query(f"{column_filter.column} == {column_filter.values}")
+        df = df.loc[df[column_filter.column].isin(column_filter.values)]
 
     for column_filter in applied_filters.numerical:
         if (
