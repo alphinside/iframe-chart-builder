@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/alphinside/iframe-chart-builder/compare/v1.3.2...v1.4.0) (2022-01-09)
+
+
+### Features
+
+* added pagination to listing routes ([#30](https://github.com/alphinside/iframe-chart-builder/issues/30)) ([68a7729](https://github.com/alphinside/iframe-chart-builder/commit/68a772909a463aedda02139c6dd311bdf5937a06))
+
+
+### Bug Fixes
+
+* categorical filter not filtered correctly because using df query ([18f738e](https://github.com/alphinside/iframe-chart-builder/commit/18f738e0fb9050836d471146c3ff8aab452cb526))
+
 ### [1.3.2](https://github.com/alphinside/iframe-chart-builder/compare/v1.3.1...v1.3.2) (2021-12-11)
 
 
