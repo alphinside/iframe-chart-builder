@@ -12,6 +12,9 @@ class BarChartBuilder(ChartBuilderInterface):
         self, chart_params: BarChartParams, df: pd.DataFrame
     ) -> Figure:
 
+        if chart_params.column_for_color is None:
+            chart_params.column_for_color = chart_params.column_for_y
+
         kwargs = {
             "x": chart_params.column_for_x,
             "y": chart_params.column_for_y,
@@ -26,6 +29,23 @@ class BarChartBuilder(ChartBuilderInterface):
         if isinstance(chart_params.column_for_y, list):
             kwargs.pop("color")
 
+        visualized_column_list = list(
+            set(
+                [
+                    chart_params.column_for_x,
+                    chart_params.column_for_y,
+                    chart_params.column_for_color,
+                ]
+            )
+        )
+        vis_df = (
+            df[visualized_column_list]
+            .copy()
+            .groupby(by=[chart_params.column_for_x])
+            .sum()
+            .reset_index()
+        )
+
         if chart_params.column_for_color is not None:
             if chart_params.orientation == BarOrientation.v:
                 group_column = chart_params.column_for_x
@@ -34,20 +54,23 @@ class BarChartBuilder(ChartBuilderInterface):
                 group_column = chart_params.column_for_y
                 value_column = chart_params.column_for_x
 
-            color_value_sum = df.groupby([group_column]).sum()
+            color_value_sum = vis_df.groupby([group_column]).sum()
             color_value_sum = color_value_sum.rename(
                 columns={"count": "color_value_sum"}
             )
-            df = df.merge(color_value_sum, on=group_column)
-            df["percentage"] = df[value_column] / df["color_value_sum"]
-            df["percentage"] = (
-                df["percentage"]
+            vis_df = vis_df.merge(color_value_sum, on=group_column)
+            vis_df["percentage"] = (
+                vis_df[value_column] / vis_df["color_value_sum"]
+            )
+            vis_df["percentage"] = (
+                vis_df["percentage"]
                 .round(decimals=2)
                 .map(lambda n: "{:,.2%}".format(n))
             )
+            vis_df.drop(["color_value_sum"], axis=1)
 
             kwargs.update({"text": "percentage"})
 
-        fig = px.bar(df, **kwargs)
+        fig = px.bar(vis_df, **kwargs)
 
         return fig
