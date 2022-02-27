@@ -82,5 +82,5 @@ class BarOrientation(str, BaseEnum):
 
 
 class BarPercentageColumnBase(str, BaseEnum):
-    column_for_x = "column_for_x"
+    column_for_xy = "column_for_xy"
     column_for_color = "column_for_color"

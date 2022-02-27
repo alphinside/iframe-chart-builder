@@ -21,7 +21,7 @@ BARCHART_REQUEST_EXAMPLES = {
                 "column_for_color": "medal",
                 "barmode": "stack",
                 "orientation": "vertical",
-                "percentage_column_base": "column_for_x",
+                "percentage_column_base": "column_for_xy",
                 "filters": [
                     {"column": "medal", "type": "categorical"},
                     {"column": "count", "type": "numerical"},
@@ -51,7 +51,7 @@ BARCHART_REQUEST_EXAMPLES = {
                 "column_for_color": "medal",
                 "barmode": "stack",
                 "orientation": "horizontal",
-                "percentage_column_base": "column_for_x",
+                "percentage_column_base": "column_for_xy",
                 "filters": [
                     {"column": "medal", "type": "categorical"},
                     {"column": "count", "type": "numerical"},
@@ -80,7 +80,7 @@ BARCHART_REQUEST_EXAMPLES = {
                 "column_for_y": ["bronze", "silver", "gold"],
                 "barmode": "stack",
                 "orientation": "vertical",
-                "percentage_column_base": "column_for_x",
+                "percentage_column_base": "column_for_xy",
                 "filters": [
                     {"column": "bronze", "type": "numerical"},
                     {"column": "silver", "type": "numerical"},
@@ -110,7 +110,7 @@ BARCHART_REQUEST_EXAMPLES = {
                 "column_for_y": "nation",
                 "barmode": "stack",
                 "orientation": "horizontal",
-                "percentage_column_base": "column_for_x",
+                "percentage_column_base": "column_for_xy",
                 "filters": [
                     {"column": "bronze", "type": "numerical"},
                     {"column": "silver", "type": "numerical"},

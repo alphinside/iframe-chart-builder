@@ -64,7 +64,7 @@ class BarChartBuilder(ChartBuilderInterface):
         else:
             if (
                 chart_params.percentage_column_base
-                == BarPercentageColumnBase.column_for_x
+                == BarPercentageColumnBase.column_for_xy
             ):
                 if chart_params.orientation == BarOrientation.v:
                     group_column = chart_params.column_for_x

@@ -135,7 +135,7 @@ class BarChartParams(BaseChartParams):
     barmode: BarMode = BarMode.stack
     orientation: BarOrientation = BarOrientation.v
     percentage_column_base: BarPercentageColumnBase = (
-        BarPercentageColumnBase.column_for_x
+        BarPercentageColumnBase.column_for_xy
     )
 
     @validator("column_for_x")
