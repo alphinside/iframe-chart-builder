@@ -28,7 +28,7 @@ from app.constant import (
     PlotlyColorGroup,
     ResourceType,
 )
-from app.data_manager import register_table_path
+from app.data_manager import get_data, register_table_path
 from app.schema.requests import ChartStyle
 from app.schema.response import (
     ColorGroupResponse,
@@ -39,6 +39,7 @@ from app.schema.response import (
     ListingResponse,
     PaginationMeta,
     SuccessMessage,
+    TableColumnsResponse,
     UploadSuccessData,
     UploadSuccessResponse,
 )
@@ -325,3 +326,18 @@ def get_chart_config(
         chart_config = json.load(f)
 
     return chart_config
+
+
+@router.get(
+    "/table/{name}/columns",
+    response_model=TableColumnsResponse,
+    summary="Get table columns",
+)
+def get_table_columns(
+    name: str = Path(..., example="example_choropleth_map"),
+):
+    validate_resource_existence(name=name, resource=ResourceType.table)
+
+    df = get_data(name)
+
+    return TableColumnsResponse(data=df.columns.tolist())
