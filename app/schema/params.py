@@ -9,6 +9,7 @@ from app.constant import (
     MAX_NUMBER_FILTERS,
     BarMode,
     BarOrientation,
+    BarPercentageColumnBase,
     DataTypes,
     FillEnum,
     PlotlyColorGroup,
@@ -133,6 +134,9 @@ class BarChartParams(BaseChartParams):
     column_for_color: Optional[str] = None
     barmode: BarMode = BarMode.stack
     orientation: BarOrientation = BarOrientation.v
+    percentage_column_base: BarPercentageColumnBase = (
+        BarPercentageColumnBase.column_for_xy
+    )
 
     @validator("column_for_x")
     def check_and_cast_column_for_x(cls, v):
