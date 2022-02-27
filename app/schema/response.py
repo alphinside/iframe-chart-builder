@@ -63,3 +63,7 @@ ColorGroupsModel = create_model("ColorGroupsModel", **color_groups)
 
 class ColorOptionsResponse(BaseModel):
     data: ColorGroupsModel
+
+
+class TableColumnsResponse(BaseModel):
+    data: List[str] = []
