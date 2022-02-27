@@ -1,8 +1,9 @@
+import json
 import os
 import shutil
 from datetime import datetime
 from http import HTTPStatus
-from typing import List
+from typing import Dict, List
 
 import config
 import pandas as pd
@@ -301,6 +302,26 @@ async def get_style_config(
 ):
     resource_path = validate_resource_existence(name=name, resource=resource)
 
-    style_config = resource_path / STANDARD_STYLE_CONFIG
+    style_config_file = resource_path / STANDARD_STYLE_CONFIG
 
-    return ChartStyle.parse_file(style_config)
+    return ChartStyle.parse_file(style_config_file)
+
+
+@router.get(
+    "/chart/{name}/chart-config",
+    response_model=Dict,
+    summary="Get chart configuration",
+)
+async def get_chart_config(
+    name: str = Path(..., example="example_choropleth_map"),
+):
+    resource_path = validate_resource_existence(
+        name=name, resource=ResourceType.chart
+    )
+
+    chart_config_file = resource_path / STANDARD_CHARTS_CONFIG
+
+    with open(chart_config_file, "r") as f:
+        chart_config = json.load(f)
+
+    return chart_config
