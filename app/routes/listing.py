@@ -116,7 +116,7 @@ async def upload(
 @router.get(
     "/tables", response_model=ListingResponse, summary="Get table listing"
 )
-async def get_tables(current_page: int = 1, page_size: int = 10):
+def get_tables(current_page: int = 1, page_size: int = 10):
     tables = []
 
     start_idx_range = (current_page - 1) * page_size
@@ -159,7 +159,7 @@ async def get_tables(current_page: int = 1, page_size: int = 10):
 @router.get(
     "/charts", response_model=ListingResponse, summary="Get chart listing"
 )
-async def get_charts(current_page: int = 1, page_size: int = 10):
+def get_charts(current_page: int = 1, page_size: int = 10):
     charts = []
 
     start_idx_range = (current_page - 1) * page_size
@@ -206,7 +206,7 @@ async def get_charts(current_page: int = 1, page_size: int = 10):
     response_model=ColorOptionsResponse,
     summary="Get all built-in color options",
 )
-async def get_built_in_color():
+def get_built_in_color():
     def _list_available_color_names(group: PlotlyColorGroup) -> List[str]:
         color_group_object = getattr(px.colors, group)
         available_colors = [
@@ -233,7 +233,7 @@ async def get_built_in_color():
     response_model=GeneralSuccessResponse,
     summary="Delete resources",
 )
-async def delete_resources(
+def delete_resources(
     resource: ResourceType = Path(..., example="chart"),
     name: str = Path(..., example="example_choropleth_map"),
 ):
@@ -267,7 +267,7 @@ async def delete_resources(
     response_model=GeneralSuccessResponse,
     summary="Update chart HTML div styling",
 )
-async def update_style_config(
+def update_style_config(
     resource: ResourceType = Path(..., example="chart"),
     name: str = Path(..., example="example_choropleth_map"),
     style: ChartStyle = Body(
@@ -296,7 +296,7 @@ async def update_style_config(
     response_model=ChartStyle,
     summary="Get current chart HTML div styling",
 )
-async def get_style_config(
+def get_style_config(
     resource: ResourceType = Path(..., example="chart"),
     name: str = Path(..., example="example_choropleth_map"),
 ):
@@ -312,7 +312,7 @@ async def get_style_config(
     response_model=Dict,
     summary="Get chart configuration",
 )
-async def get_chart_config(
+def get_chart_config(
     name: str = Path(..., example="example_choropleth_map"),
 ):
     resource_path = validate_resource_existence(
