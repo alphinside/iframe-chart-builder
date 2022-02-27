@@ -50,6 +50,7 @@ class ChartStyle(BaseModel):
                 "vertical-align": "top",
             },
             "filters_entity": {},
+            "table": {},
         }
 
 

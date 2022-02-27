@@ -56,7 +56,7 @@ def register_chart_config(request: Type[BaseChartBuilderRequest]):
     summary="Create new bar chart",
     name="create_new_bar_chart",
 )
-async def register_new_bar_chart(
+def register_new_bar_chart(
     request: BarChartBuilderRequest = Body(
         ..., examples=BARCHART_REQUEST_EXAMPLES
     )
@@ -76,7 +76,7 @@ async def register_new_bar_chart(
     summary="Create new choropleth map chart",
     name="create_new_choropleth_map_chart",
 )
-async def register_new_choropleth_map(
+def register_new_choropleth_map(
     request: ChoroplethMapBuilderRequest = Body(
         ..., examples=CHOROPLETHMAP_REQUEST_EXAMPLES
     )
@@ -96,7 +96,7 @@ async def register_new_choropleth_map(
     summary="Create new bubble / scatter map chart",
     name="create_new_bubble_map_chart",
 )
-async def register_new_bubble_map(
+def register_new_bubble_map(
     request: BubbleMapBuilderRequest = Body(
         ..., examples=BUBBLEMAP_REQUEST_EXAMPLES
     )
@@ -116,7 +116,7 @@ async def register_new_bubble_map(
     summary="Create new bubble / scatter chart",
     name="create_new_bubble_chart",
 )
-async def register_new_bubble_chart(
+def register_new_bubble_chart(
     request: BubbleChartBuilderRequest = Body(
         ..., examples=BUBBLECHART_REQUEST_EXAMPLES
     )
@@ -136,7 +136,7 @@ async def register_new_bubble_chart(
     summary="Create new line chart",
     name="create_new_line_chart",
 )
-async def register_new_line_chart(
+def register_new_line_chart(
     request: LineChartBuilderRequest = Body(
         ..., examples=LINECHART_REQUEST_EXAMPLES
     )
@@ -156,7 +156,7 @@ async def register_new_line_chart(
     summary="Create new pie chart",
     name="create_new_pie_chart",
 )
-async def register_new_pie_chart(
+def register_new_pie_chart(
     request: PieChartBuilderRequest = Body(
         ..., examples=PIECHART_REQUEST_EXAMPLES
     )
@@ -176,7 +176,7 @@ async def register_new_pie_chart(
     summary="Create new windrose chart",
     name="create_new_windrose_chart",
 )
-async def register_new_windrose_chart(
+def register_new_windrose_chart(
     request: WindroseChartBuilderRequest = Body(
         ..., examples=WINDROSECHART_REQUEST_EXAMPLES
     )
@@ -196,7 +196,7 @@ async def register_new_windrose_chart(
     summary="Create new sunburst chart",
     name="create_new_sunburst_chart",
 )
-async def register_new_sunburst_chart(
+def register_new_sunburst_chart(
     request: SunburstChartBuilderRequest = Body(
         ..., examples=SUNBURSTCHART_REQUEST_EXAMPLES
     )
@@ -216,7 +216,7 @@ async def register_new_sunburst_chart(
     summary="Create new radar chart",
     name="create_new_radar_chart",
 )
-async def register_new_radar_chart(
+def register_new_radar_chart(
     request: RadarChartBuilderRequest = Body(
         ..., examples=RADARCHART_REQUEST_EXAMPLES
     )
