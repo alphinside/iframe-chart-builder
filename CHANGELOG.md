@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/alphinside/iframe-chart-builder/compare/v1.4.0...v1.5.0) (2022-02-27)
+
+
+### Features
+
+* added column option to calculate percentage for bar chart ([#31](https://github.com/alphinside/iframe-chart-builder/issues/31)) ([fcc4f56](https://github.com/alphinside/iframe-chart-builder/commit/fcc4f560c7e39f1b919d298b05e9431c562227f4))
+* added endpoint to get table columns ([#33](https://github.com/alphinside/iframe-chart-builder/issues/33)) ([b6b2fe6](https://github.com/alphinside/iframe-chart-builder/commit/b6b2fe63ef6e975c226890112185a69895e21c53))
+* added get chart config ep ([#32](https://github.com/alphinside/iframe-chart-builder/issues/32)) ([9b09778](https://github.com/alphinside/iframe-chart-builder/commit/9b09778e8c8a7e55b79089a2bc0bab70bee51241))
+
 ## [1.4.0](https://github.com/alphinside/iframe-chart-builder/compare/v1.3.2...v1.4.0) (2022-01-09)
 
 
