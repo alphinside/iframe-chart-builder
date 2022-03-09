@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.1](https://github.com/alphinside/iframe-chart-builder/compare/v1.5.0...v1.5.1) (2022-03-09)
+
+
+### Bug Fixes
+
+* adding handler if categorical column is used for column for colo… ([#34](https://github.com/alphinside/iframe-chart-builder/issues/34)) ([9be4a3c](https://github.com/alphinside/iframe-chart-builder/commit/9be4a3c226fc111e2a9f26a414b32579e2bdf7cc))
+
 ## [1.5.0](https://github.com/alphinside/iframe-chart-builder/compare/v1.4.0...v1.5.0) (2022-02-27)
 
 
