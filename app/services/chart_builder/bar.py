@@ -15,7 +15,10 @@ class BarChartBuilder(ChartBuilderInterface):
     ) -> Figure:
 
         if chart_params.column_for_color is None:
-            chart_params.column_for_color = chart_params.column_for_y
+            if chart_params.orientation == BarOrientation.v:
+                chart_params.column_for_color = chart_params.column_for_y
+            else:
+                chart_params.column_for_color = chart_params.column_for_x
 
         bar_kwargs = {
             "x": chart_params.column_for_x,
@@ -53,9 +56,8 @@ class BarChartBuilder(ChartBuilderInterface):
         vis_df: pd.DataFrame,
         bar_kwargs: Dict,
     ) -> Tuple[pd.DataFrame, Dict]:
-        if (
-            chart_params.column_for_y == chart_params.column_for_color
-            or chart_params.column_for_x == chart_params.column_for_color
+        if (chart_params.column_for_y == chart_params.column_for_color) or (
+            chart_params.column_for_x == chart_params.column_for_color
         ):
             if chart_params.orientation == BarOrientation.v:
                 value_column = chart_params.column_for_y
