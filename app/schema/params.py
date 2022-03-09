@@ -158,6 +158,22 @@ class BarChartParams(BaseChartParams):
 
         return v
 
+    @root_validator(pre=True)
+    def check_color_column_in_wide_format(cls, values):
+        column_for_x = values["column_for_x"]
+        column_for_y = values["column_for_y"]
+        column_for_color = values["column_for_color"]
+
+        if (
+            isinstance(column_for_x, list) or isinstance(column_for_y, list)
+        ) and (column_for_color is not None):
+            raise ValueError(
+                "`column_for_color` cannot be used in wide bar format, please "
+                "delete it from config"
+            )
+
+        return values
+
 
 class ChoroplethMapParams(BaseChartParams):
     column_for_location: str
