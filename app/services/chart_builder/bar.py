@@ -16,9 +16,9 @@ class BarChartBuilder(ChartBuilderInterface):
 
         if chart_params.column_for_color is None:
             if chart_params.orientation == BarOrientation.v:
-                chart_params.column_for_color = chart_params.column_for_y
-            else:
                 chart_params.column_for_color = chart_params.column_for_x
+            else:
+                chart_params.column_for_color = chart_params.column_for_y
 
         bar_kwargs = {
             "x": chart_params.column_for_x,
